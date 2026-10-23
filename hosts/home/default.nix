@@ -19,6 +19,9 @@
       bluetooth
       virtualization
 
+      home-manager
+      hyprland
+
       # Host Specific
       home-hardware
     ];
