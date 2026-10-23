@@ -24,6 +24,9 @@
       web-apps
       hyprland
       mpd
+      rmpc
+      listenbrainz
+      mympd
 
       # Host Specific
       home-hardware
