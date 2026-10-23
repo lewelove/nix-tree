@@ -31,12 +31,19 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [ "x86_64-linux" ];
 
-      imports = map inputs.import-tree [
+      imports = (map inputs.import-tree [
         ./core
         ./modules
-        ./hosts
         ./features
         ./secrets
+      ]) ++ [
+        (inputs.import-tree.filter (path:
+          let
+            base = builtins.baseNameOf (toString path);
+            parent = builtins.baseNameOf (builtins.dirOf (toString path));
+          in
+            base == "${parent}.nix"
+        ) ./hosts)
       ];
     };
 }

@@ -1,16 +1,4 @@
-{ ... }:
-
-{
-  flake.nixosModules.home-system = { pkgs, config, ... }: {
-    networking.hostName = "home";
-    networking.networkmanager.enable = true;
-    networking.nameservers = [
-      "1.1.1.1"
-      "9.9.9.9"
-    ];
-    networking.firewall.checkReversePath = "loose";
-    networking.firewall.trustedInterfaces = [ "tun0" ];
-
+{ pkgs, config, ... }: {
     environment.extraInit = ''
       export PATH="$HOME/.commands:$HOME/.scripts:$PATH"
     '';
@@ -96,5 +84,4 @@
         cgroup_manager = "systemd";
       };
     };
-  };
 }

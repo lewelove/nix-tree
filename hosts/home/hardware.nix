@@ -1,7 +1,4 @@
-{ ... }:
-
-{
-  flake.nixosModules.home-hardware = { pkgs, id, ... }: {
+{ pkgs, id, ... }: {
     boot.initrd.availableKernelModules = [
       "xhci_pci"
       "ahci"
@@ -156,17 +153,4 @@
       };
     };
 
-    networking.interfaces.enp3s0.wakeOnLan.enable = true;
-
-    systemd.services.wol-enp3s0 = {
-      description = "Force Wake-on-LAN for enp3s0";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.ethtool}/bin/ethtool -s enp3s0 wol g";
-        RemainAfterExit = true;
-      };
-    };
-  };
 }

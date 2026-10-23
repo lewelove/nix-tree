@@ -3,8 +3,14 @@
 {
   flake.nixosConfigurations.home = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
-    modules = with self.nixosModules; [
-
+    modules = [
+      ./system.nix
+      ./network.nix
+      ./packages.nix
+      ./hardware.nix
+      ./syncthing.nix
+      ./scripts/home-scripts.nix
+    ] ++ (with self.nixosModules; [
       # Core
       id
       system
@@ -12,11 +18,9 @@
       boot
 
       # Modules
-      home-system
       nix-ld
+      isp
 
-      home-packages
-      home-scripts
       home-manager
       secrets
       web-apps
@@ -65,10 +69,6 @@
       transmission-web-app
       v2raya-web-app
       mpv
-
-      # Host Specific
-      home-hardware
-      home-syncthing
-    ];
+    ]);
   };
 }

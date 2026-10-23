@@ -1,7 +1,4 @@
-{ ... }:
-
-{
-  flake.nixosModules.home-packages = { pkgs, ... }: {
+{ pkgs, ... }: {
     environment.systemPackages = with pkgs; [
       wget
       unzip
@@ -102,5 +99,4 @@
       fuzzyCompletion = true;
       keybindings = true;
     };
-  };
 }
