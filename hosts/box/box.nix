@@ -10,7 +10,6 @@
       ./system.nix
       ./network.nix
       ./packages.nix
-      ./user.nix
       ./microvm.nix
 
       ({ id, ... }: {
@@ -18,7 +17,7 @@
       })
     ] ++ (with self.nixosModules; [
       id
-      user
+      system
       home-manager
 
       pi

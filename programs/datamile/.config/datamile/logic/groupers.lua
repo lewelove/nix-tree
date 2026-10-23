@@ -6,7 +6,7 @@ local chroma_order = {
   Saturated = 5,
 }
 
-dale.grouper("genre", { label = "Genre",
+datamile.grouper("genre", { label = "Genre",
   select = function(a) return d.get(a, "keys.genre") or "Unknown" end,
   format = function(g)
     return {
@@ -17,7 +17,7 @@ dale.grouper("genre", { label = "Genre",
   end
 })
 
-dale.grouper("styles", { label = "Styles",
+datamile.grouper("styles", { label = "Styles",
   select = function(a) return d.get(a, "keys.styles") or "Unknown" end,
   format = function(g)
     return {
@@ -28,7 +28,7 @@ dale.grouper("styles", { label = "Styles",
   end
 })
 
-dale.grouper("year", { label = "Decades & Years",
+datamile.grouper("year", { label = "Decades & Years",
   select = function(a)
     local date = d.get(a, "date")
     if date and #date >= 4 then return date:sub(1, 4) end
@@ -67,7 +67,7 @@ dale.grouper("year", { label = "Decades & Years",
   end,
 })
 
-dale.grouper("total_tracks", { label = "Total Tracks",
+datamile.grouper("total_tracks", { label = "Total Tracks",
   select = function(a)
     local tracks = d.get(a, "info.total_tracks") or 0
     return tostring(tracks)
@@ -80,7 +80,7 @@ dale.grouper("total_tracks", { label = "Total Tracks",
   end,
 })
 
-dale.grouper("total_discs", { label = "Total Discs",
+datamile.grouper("total_discs", { label = "Total Discs",
   select = function(a)
     local discs = d.get(a, "info.total_discs") or 1
     return tostring(discs)
@@ -93,7 +93,7 @@ dale.grouper("total_discs", { label = "Total Discs",
   end,
 })
 
-dale.grouper("year_added", { label = "Year Added",
+datamile.grouper("year_added", { label = "Year Added",
   select = function(a)
     local date = d.get(a, "keys.date_added")
     if date and #date >= 4 then return date:sub(1, 4) end
@@ -101,7 +101,7 @@ dale.grouper("year_added", { label = "Year Added",
   end,
 })
 
-dale.grouper("chroma", { label = "Chroma",
+datamile.grouper("chroma", { label = "Chroma",
   reverse = true,
   select = function(a)
     local raw = d.get(a, "keys.cover_chroma")
@@ -120,7 +120,7 @@ dale.grouper("chroma", { label = "Chroma",
   end,
 })
 
-dale.grouper("folder", { label = "Folders",
+datamile.grouper("folder", { label = "Folders",
   select = function(a)
     local rel_path = d.get(a, "keys.path")
     if not rel_path or rel_path == "" then return "Unknown" end

@@ -1,4 +1,4 @@
-dale.order("default", { label = "Default",
+datamile.order("default", { label = "Default",
   sort = function(a)
     local custom = d.get(a, "keys.custom_albumartist")
     local albumartist = d.get(a, "albumartist")
@@ -11,14 +11,14 @@ dale.order("default", { label = "Default",
   end,
 })
 
-dale.order("az", { label = "Alphabetical",
+datamile.order("az", { label = "Alphabetical",
   sort = function(a)
     local album = d.get(a, "album") or ""
     return album:lower()
   end,
 })
 
-dale.order("year", { label = "Year",
+datamile.order("year", { label = "Year",
   reverse = true,
   sort = function(a)
     local date = d.get(a, "date")
@@ -27,7 +27,7 @@ dale.order("year", { label = "Year",
   end,
 })
 
-dale.order("duration", { label = "Duration",
+datamile.order("duration", { label = "Duration",
   -- reverse = true,
   sort = function(a)
     local val = d.get(a, "info.duration_milliseconds")
@@ -35,15 +35,15 @@ dale.order("duration", { label = "Duration",
   end,
 })
 
-dale.order("cover_hash", { label = "Cover Hash",
+datamile.order("cover_hash", { label = "Cover Hash",
   sort = function(a) return d.get(a, "covers.main.file.address") or "" end,
 })
 
-dale.order("random", { label = "Random",
+datamile.order("random", { label = "Random",
   sort = function(a) return "0" end,
 })
 
-dale.order("chroma", { label = "Chroma",
+datamile.order("chroma", { label = "Chroma",
   reverse = true,
   sort = function(a)
     local val = d.get(a, "keys.cover_chroma")
@@ -51,7 +51,7 @@ dale.order("chroma", { label = "Chroma",
   end,
 })
 
-dale.order("entropy", { label = "Entropy",
+datamile.order("entropy", { label = "Entropy",
   reverse = true,
   sort = function(a)
     local val = d.get(a, "keys.cover_entropy")
@@ -59,12 +59,12 @@ dale.order("entropy", { label = "Entropy",
   end,
 })
 
-dale.order("date_added", { label = "Date Added",
+datamile.order("date_added", { label = "Date Added",
   reverse = true,
   sort = function(a) return d.get(a, "keys.date_added") or "" end,
 })
 
-dale.order("last_edited", { label = "Last Edited",
+datamile.order("last_edited", { label = "Last Edited",
   reverse = true,
   sort = function(a)
     local max_mtime = 0

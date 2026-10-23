@@ -9,7 +9,7 @@ Letterboxd=https://letterboxd.com/
 Openrouter=https://openrouter.ai
 CUETOOLS=http://db.cuetools.net/?tocid=
 Material Symbols=https://fonts.google.com/icons
-GitHub / lewelove / dale=https://github.com/lewelove/dale
+GitHub / lewelove / datamile=https://github.com/lewelove/datamile
 GitHub / lewelove / mute=https://github.com/lewelove/mute
 Discogs / ʄʊȶʊʀɛ ǟʟɮʊʍֆ ʄօʀ=https://www.discogs.com/lists/%CA%84%CA%8A%C8%B6%CA%8A%CA%80%C9%9B-%C7%9F%CA%9F%C9%AE%CA%8A%CA%8D%D6%86-%CA%84%D6%85%CA%80/1613841
 Openrouter / Nano Banana Pro=https://openrouter.ai/chat?models=google/gemini-3-pro-image-preview

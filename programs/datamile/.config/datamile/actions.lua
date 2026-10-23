@@ -1,4 +1,4 @@
-local root_dir = d.fs.normalize("~/dev/dale")
+local root_dir = d.fs.normalize("~/dev/datamile")
 
 local function rust_bin(name)
   return d.fs.normalize(d.fs.joinpath(root_dir, "target/release", name))
@@ -22,7 +22,7 @@ local function add_arg(args, flag, val)
   table.insert(args, tostring(val))
 end
 
-dale.action("open_terminal", {
+datamile.action("open_terminal", {
   label = "Open Terminal",
   description = "Open terminal inside album directory",
   run = function(ctx)
@@ -32,16 +32,16 @@ dale.action("open_terminal", {
   end
 })
 
-dale.action("open_config_in_terminal", {
+datamile.action("open_config_in_terminal", {
   label = "Open Config in Terminal",
-  description = "Open terminal inside Dale configuration directory",
+  description = "Open terminal inside Datamile configuration directory",
   run = function(ctx)
-    local config_dir = d.fs.normalize("~/.config/dale")
+    local config_dir = d.fs.normalize("~/.config/datamile")
     d.system({ "alacritty", "-e", "sh", "-c", 'nvim -s <(printf " e")' }, { cwd = config_dir, detach = true })
   end
 })
 
-dale.action("theme", {
+datamile.action("theme", {
   label = "Generate Theme",
   description = "Extract dominant colors from album cover",
   run = function(ctx)
@@ -64,7 +64,7 @@ dale.action("theme", {
   end
 })
 
-dale.action("collect", {
+datamile.action("collect", {
   label = "Collect Metadata",
   description = "Fetch and scaffold album from Discogs or MusicBrainz URL",
   run = function(ctx)
@@ -84,7 +84,7 @@ dale.action("collect", {
   end
 })
 
-dale.action("mbf", {
+datamile.action("mbf", {
   label = "MusicBrainz Fetch",
   description = "Fetch raw JSON metadata from MusicBrainz",
   run = function(ctx)
@@ -115,7 +115,7 @@ dale.action("mbf", {
   end
 })
 
-dale.action("mbffid", {
+datamile.action("mbffid", {
   label = "MusicBrainz Fetch From ID",
   description = "Fetch raw JSON metadata from MusicBrainz using id.toml",
   run = function(ctx)
@@ -150,7 +150,7 @@ dale.action("mbffid", {
   end
 })
 
-dale.action("embed", {
+datamile.action("embed", {
   label = "Embed Tags",
   description = "Embed metadata from album.lock.json into audio files",
   run = function(ctx)
@@ -206,7 +206,7 @@ dale.action("embed", {
   end
 })
 
-dale.action("rename", {
+datamile.action("rename", {
   label = "Rename Files",
   description = "Standardize track filenames according to metadata",
   run = function(ctx)
@@ -221,11 +221,11 @@ dale.action("rename", {
   end
 })
 
-dale.action("lyrics", {
+datamile.action("lyrics", {
   label = "Fetch Lyrics",
   description = "Fetch track lyrics from Genius",
   run = function(ctx)
-    local secrets = d.fs.read_dotenv("~/.secrets/dale.env")
+    local secrets = d.fs.read_dotenv("~/.secrets/datamile.env")
     local token = secrets and secrets.GENIUS_ACCESS_TOKEN
     for _, entry in ipairs(ctx.albums) do
       local args = { py_bin("lyrics") }
@@ -236,7 +236,7 @@ dale.action("lyrics", {
   end
 })
 
-dale.action("search_cover", {
+datamile.action("search_cover", {
   label = "Search Cover",
   description = "Search high-res artwork on MusicHoarders",
   run = function(ctx)
@@ -255,7 +255,7 @@ dale.action("search_cover", {
   end
 })
 
-dale.action("cover_metrics", {
+datamile.action("cover_metrics", {
   label = "Cover Metrics",
   description = "Calculate chroma and entropy for album cover",
   run = function(ctx)
@@ -270,7 +270,7 @@ dale.action("cover_metrics", {
   end
 })
 
-dale.action("mbs", {
+datamile.action("mbs", {
   label = "MusicBrainz Search",
   description = "Search release groups on MusicBrainz",
   run = function(ctx)
@@ -321,7 +321,7 @@ dale.action("mbs", {
   end
 })
 
-dale.action("css", {
+datamile.action("css", {
   label = "Copy Search String",
   description = "Copy 'Artist - Album' search string to clipboard",
   run = function(ctx)
@@ -339,7 +339,7 @@ dale.action("css", {
   end
 })
 
-dale.action("cs", {
+datamile.action("cs", {
   label = "Cover Source",
   description = "Download cover image from URL",
   run = function(ctx)
@@ -351,7 +351,7 @@ dale.action("cs", {
   end
 })
 
-dale.action("rts", {
+datamile.action("rts", {
   label = "RuTracker Search",
   description = "Search album releases on RuTracker",
   run = function(ctx)

@@ -1,4 +1,4 @@
-dale.cabinet("main", { label = "Main Cabinet",
+datamile.cabinet("main", { label = "Main Cabinet",
   shelves = {
     "added_this_year",
     "added_this_year_real",
@@ -14,7 +14,7 @@ dale.cabinet("main", { label = "Main Cabinet",
   },
 })
 
-dale.shelf("added_this_year", { label = "Added This Year",
+datamile.shelf("added_this_year", { label = "Added This Year",
   reverse = true,
   match = function(a)
     local date = d.get(a, "keys.date_added")
@@ -25,7 +25,7 @@ dale.shelf("added_this_year", { label = "Added This Year",
   end,
 })
 
-dale.shelf("added_this_year_real", { label = "Added This Year Non-Virtual",
+datamile.shelf("added_this_year_real", { label = "Added This Year Non-Virtual",
   reverse = true,
   match = function(a)
     local date = d.get(a, "keys.date_added")
@@ -36,7 +36,7 @@ dale.shelf("added_this_year_real", { label = "Added This Year Non-Virtual",
   end,
 })
 
-dale.shelf("virtual", { label = "Virtual Albums",
+datamile.shelf("virtual", { label = "Virtual Albums",
   reverse = true,
   match = function(a)
     return d.get(a, "info.virtual") == true
@@ -46,9 +46,9 @@ dale.shelf("virtual", { label = "Virtual Albums",
   end,
 })
 
-local ambient50 = d.fs.read_lines("~/.config/dale/shelves/Ambient50.txt")
+local ambient50 = d.fs.read_lines("~/.config/datamile/shelves/Ambient50.txt")
 
-dale.shelf("ambient50", { label = "Ambient 50",
+datamile.shelf("ambient50", { label = "Ambient 50",
   match = function(a)
     local id = d.get(a, "keys.path")
     return ambient50[id]
@@ -59,7 +59,7 @@ dale.shelf("ambient50", { label = "Ambient 50",
   end,
 })
 
-dale.shelf("signalwave", { label = "Signalwave",
+datamile.shelf("signalwave", { label = "Signalwave",
   match = function(a)
     local genre = d.get(a, "keys.genre")
     return contains(genre, "Signalwave")
@@ -69,7 +69,7 @@ dale.shelf("signalwave", { label = "Signalwave",
   end,
 })
 
-dale.shelf("hauntology", { label = "Hauntology & Lost Futures",
+datamile.shelf("hauntology", { label = "Hauntology & Lost Futures",
   match = function(a)
     local artist = d.get(a, "albumartist")
     return artist == "The Caretaker"

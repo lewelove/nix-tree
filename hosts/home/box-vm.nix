@@ -3,7 +3,7 @@
 let
   sharedProjects = [
     "cloned"
-    "dale"
+    "datamile"
     "nix-tree"
   ];
 in

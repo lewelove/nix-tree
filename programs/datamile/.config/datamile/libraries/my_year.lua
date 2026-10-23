@@ -1,4 +1,4 @@
-dale.library("my_year", { label = "My Year",
+datamile.library("my_year", { label = "My Year",
   groupers = {
     "my_year_grouper",
   },
@@ -11,7 +11,7 @@ dale.library("my_year", { label = "My Year",
   end,
 })
 
-dale.grouper("my_year_grouper", { label = "Year",
+datamile.grouper("my_year_grouper", { label = "Year",
   select = function(a)
     return d.get(a, "keys.my_year")
   end,

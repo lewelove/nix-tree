@@ -43,7 +43,7 @@
 
       imports = (map inputs.import-tree [
         ./core
-        ./modules
+        ./features
         ./programs
         ./scripts
         ./secrets

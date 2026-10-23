@@ -3,8 +3,7 @@
 let
   sharedProjects = [
     "cloned"
-    "dale"
-    "nix-tree"
+    "datamile"
   ];
 
   mkDevShare = name: {
@@ -43,7 +42,6 @@ in
         tag = "nix-config";
         source = id.repoPath;
         mountPoint = id.repoPath;
-        readOnly = true;
       }
       {
         proto = "virtiofs";

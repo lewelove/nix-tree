@@ -1,10 +1,10 @@
 [files]
 
-dale = {
-  run = "repomix ~/dev/dale --quiet && repomix ~/.config/dale --quiet",
+datamile = {
+  run = "repomix ~/dev/datamile --quiet && repomix ~/.config/datamile --quiet",
   paste = [
-  "~/Folders/XML Packed/~-dev-dale.xml",
-  "~/Folders/XML Packed/~-.config-dale.xml"
+  "~/Folders/XML Packed/~-dev-datamile.xml",
+  "~/Folders/XML Packed/~-.config-datamile.xml"
   ]
 }
 

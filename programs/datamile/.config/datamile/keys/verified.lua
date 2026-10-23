@@ -1,4 +1,4 @@
-dale.compile.album.key("verified", function(ctx, m)
+datamile.compile.album.key("verified", function(ctx, m)
   local fields = { "albumartist", "album", "date" }
   for _, field in ipairs(fields) do
     local hist = d.get(m, "history.album", field)

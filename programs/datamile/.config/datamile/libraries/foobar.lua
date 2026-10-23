@@ -1,4 +1,4 @@
-dale.library("foobar", { label = "Foobar2000",
+datamile.library("foobar", { label = "Foobar2000",
   groupers = {
     "year_added_foobar",
   },
@@ -10,14 +10,14 @@ dale.library("foobar", { label = "Foobar2000",
   end,
 })
 
-dale.grouper("year_added_foobar", { label = "Year Added",
+datamile.grouper("year_added_foobar", { label = "Year Added",
   select = function(a)
     local date = d.get(a, "keys.date_added_foobar")
     if date and #date >= 4 then return date:sub(1, 4) end
   end,
 })
 
-dale.order("date_added_foobar", { label = "Date Added",
+datamile.order("date_added_foobar", { label = "Date Added",
   reverse = true,
   sort = function(a)
     return d.get(a, "keys.date_added_foobar") or ""

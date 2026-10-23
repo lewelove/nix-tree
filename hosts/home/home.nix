@@ -19,7 +19,6 @@
       # Core
       id
       system
-      user
       boot
 
       # Modules
@@ -88,9 +87,8 @@
       cliphist
       thunar
       quickshell
-      dale
+      datamile
       figma
-      photopea
       syncthing
       syncthing-web-app
 

@@ -1,4 +1,4 @@
-dale.library("Experimental", {
+datamile.library("Experimental", {
   filters = { "default", "vapor_memory" },
   groupers = {
     "artist_tree",
@@ -7,11 +7,11 @@ dale.library("Experimental", {
   match = function(a) return true end,
 })
 
-dale.order("cover_mtime", { label = "Cover Mtime",
+datamile.order("cover_mtime", { label = "Cover Mtime",
   sort = function(a) return d.get(a, "covers.main.file.mtime") end,
 })
 
-dale.grouper("artist_tree", { label = "Artist Tree",
+datamile.grouper("artist_tree", { label = "Artist Tree",
   select = function(a)
     local albumartists = d.get(a, "keys.albumartists")
     local albumartist = d.get(a, "albumartist")

@@ -1,4 +1,4 @@
-dale.library( "all_albums", { label = "All Albums",
+datamile.library( "all_albums", { label = "All Albums",
   filters = {
     "main_library",
     "vapor_memory",

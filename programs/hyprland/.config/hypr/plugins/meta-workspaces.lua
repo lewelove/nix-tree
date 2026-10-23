@@ -32,7 +32,7 @@ local meta_workspaces = {
     key = "Slash",
     name = "/",
     layout = "dwindle",
-    on_created_empty = x.terminal .. " -e dale server & " .. x.terminal .. " -e dale interface dev",
+    on_created_empty = x.terminal .. " -e datamile server & " .. x.terminal .. " -e datamile interface dev",
   },
 }
 

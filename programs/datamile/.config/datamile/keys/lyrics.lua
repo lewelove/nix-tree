@@ -43,7 +43,7 @@ local function find_lyrics(ctx, m, i)
   return nil
 end
 
-dale.compile.track.lyrics({
+datamile.compile.track.lyrics({
   type = function(ctx, m, i)
     local _, fmt = find_lyrics(ctx, m, i)
     return fmt or "txt"

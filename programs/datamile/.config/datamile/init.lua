@@ -23,7 +23,7 @@ require("interfaces")
 
 require("actions")
 
-dale.config({
+datamile.config({
   storage = {
     music_directory = "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/",
   },
@@ -38,5 +38,5 @@ dale.config({
   },
 })
 
-dale.cache.cover({ filter = "catmullrom", size = 200 })
-dale.cache.cover({ filter = "catmullrom", size = 627 })
+datamile.cache.cover({ filter = "catmullrom", size = 200 })
+datamile.cache.cover({ filter = "catmullrom", size = 627 })
