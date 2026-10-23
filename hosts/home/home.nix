@@ -12,14 +12,11 @@
       boot
 
       # Modules
-      environment
-      networking
+      home-system
       nix-ld
-      nvidia
-      bluetooth
-      virtualization
 
       home-packages
+      home-scripts
       home-manager
       secrets
       web-apps

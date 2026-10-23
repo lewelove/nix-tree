@@ -102,12 +102,5 @@
       fuzzyCompletion = true;
       keybindings = true;
     };
-
-    hm = {
-      link = {
-        ".scripts" = ./.scripts;
-        ".applications" = ./.applications;
-      };
-    };
   };
 }
