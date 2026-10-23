@@ -13,9 +13,6 @@ if status is-interactive
   #     set -g _starship_rendered 1
   # end
 
-  fish_add_path "$HOME/.commands"
-  fish_add_path "$HOME/.scripts"
-
   alias clr="set -e _starship_rendered; clear"
   alias clear="set -e _starship_rendered; command clear"
 

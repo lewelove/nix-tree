@@ -35,6 +35,7 @@
         ./core
         ./modules
         ./features
+        ./scripts
         ./secrets
       ]) ++ [
         (inputs.import-tree.filter (path:

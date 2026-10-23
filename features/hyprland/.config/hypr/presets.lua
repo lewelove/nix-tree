@@ -17,7 +17,7 @@ return {
    torrent_sources_folder = "thunar '/run/media/lewelove/1000xhome/downloads/source.torrent/'",
   
    menu = "fuzzel",
-   bookmarks = "fuzzel-bookmarks.sh",
+   bookmarks = "fuzzel-bookmarks",
 
    steam = "steam-isp",
 

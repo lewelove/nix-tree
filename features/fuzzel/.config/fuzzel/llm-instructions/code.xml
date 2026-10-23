@@ -1,0 +1,21 @@
+<instruction>
+  - Write out the code.
+  - If new files should be created in codebase provide `touch` fish commands first.
+  - If files require no change but require renaming or moving provide fish commands first.
+  - Focus on correctness.
+</instruction>
+
+<important_constraints>
+  - Never write any additional commented lines within code blocks.
+  - When implementing new logic never keep the legacy backwards compatibility logic.
+  - Do not change styling (indentation, LoC split, etc) of already existent code that require no logical changes change willy-nilly.
+</important_constraints>
+
+  <output_formatting_repeat_for_each_file>
+    {Here you briefly explain changes made in the file, repeat for every NEW file changed}
+  
+    File: `path/to/filename.ext`
+    ```
+    {Full file content here}
+    ```
+  </output_formatting_repeat_for_each_file>

@@ -1,5 +1,3 @@
-# export PATH="$HOME/.commands:$HOME/.scripts:$PATH"
-
 # Programs
 alias nv=nvim
 alias nvn='NVIM_APPNAME=nvim-notes nvim'

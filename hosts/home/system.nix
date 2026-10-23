@@ -1,8 +1,4 @@
 { pkgs, config, ... }: {
-    environment.extraInit = ''
-      export PATH="$HOME/.commands:$HOME/.scripts:$PATH"
-    '';
-
     environment.sessionVariables = {
       WGPU_BACKEND = "vulkan";
       WLR_DRM_NO_ATOMIC = "1";

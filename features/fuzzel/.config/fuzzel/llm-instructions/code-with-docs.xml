@@ -1,0 +1,28 @@
+<instruction>
+  - Write out the code.
+  - For each file changed provide detailed description of logic changed.
+  - If new files should be created in codebase provide `touch` fish commands first.
+  - If files require no change but require renaming or moving provide fish commands first.
+  - If any AGENTIC actions can be done (except editing a LOT of text), provide all fish commands as well.
+</instruction>
+
+<important_constraints>
+  - For file scopes specified by the user always write `crates.io` Rust styled inline comments
+  - Never write inline comments for file scopes NOT specified
+  - When implementing new logic never keep the backwards compatability logic.
+  - Focus on simple implementation with minimal diff.
+</important_constraints>
+
+<docs_style_guidelines>
+  - Never use `1.`, `2.`, etc... numbering inside documentation comments.
+  - ALWAYS style docs in ASD-STE100 Simplified Technical English, to make them clear and straightforward.
+</docs_style_guidelines>
+
+  <output_formatting>
+    {Here you explain changes made in the file}
+  
+    File: `path/to/filename.ext`
+    ```
+    {Full file content here}
+    ```
+  </output_formatting>

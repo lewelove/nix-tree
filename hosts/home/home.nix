@@ -8,8 +8,6 @@
       ./network.nix
       ./packages.nix
       ./hardware.nix
-      ./syncthing.nix
-      ./scripts/home-scripts.nix
     ] ++ (with self.nixosModules; [
       # Core
       id
@@ -21,6 +19,21 @@
       nix-ld
       isp
 
+      # Scripts
+      cliphist-copy
+      nrs
+      sync
+      try
+      ytd
+      ns
+      nt
+      change-wallpaper
+      powermenu
+      wrap-paste
+      diff-explain
+      diff-name
+      diff-review
+
       home-manager
       secrets
       web-apps
@@ -31,6 +44,7 @@
       mimeapps
       repomix
       xremap
+      fuzzel
 
       ssh
       git
@@ -49,6 +63,7 @@
       dale
       figma
       photopea
+      syncthing
       syncthing-web-app
 
       chromium-isp

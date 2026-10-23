@@ -1,0 +1,18 @@
+Google AI Studio=https://aistudio.google.com/prompts/new_chat
+GitHub / lewelove=https://github.com/lewelove
+RuTracker=https://rutracker.org/
+Anna's Archive=https://annas-archive.gd/search
+Goodreads / Wantlist=https://www.goodreads.com/review/list/200651903-lewe-love?utf8=%E2%9C%93&ref=nav_mybooks&shelf=to-read&title=lewe-love&per_page=infinite
+Discogs=https://discogs.com
+MusicBrainz Search=https://musicbrainz.org/search
+Letterboxd=https://letterboxd.com/
+Openrouter=https://openrouter.ai
+CUETOOLS=http://db.cuetools.net/?tocid=
+Material Symbols=https://fonts.google.com/icons
+GitHub / lewelove / dale=https://github.com/lewelove/dale
+GitHub / lewelove / mute=https://github.com/lewelove/mute
+Discogs / ʄʊȶʊʀɛ ǟʟɮʊʍֆ ʄօʀ=https://www.discogs.com/lists/%CA%84%CA%8A%C8%B6%CA%8A%CA%80%C9%9B-%C7%9F%CA%9F%C9%AE%CA%8A%CA%8D%D6%86-%CA%84%D6%85%CA%80/1613841
+Openrouter / Nano Banana Pro=https://openrouter.ai/chat?models=google/gemini-3-pro-image-preview
+Openrouter / Claude Opus 4.6=https://openrouter.ai/chat?models=anthropic/claude-opus-4.6
+Nix Search=https://search.nixos.org/packages
+GitHub / Savelcake=https://github.com/Savelcake

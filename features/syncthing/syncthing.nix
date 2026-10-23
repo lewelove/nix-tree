@@ -7,9 +7,7 @@
       user = id.user;
       group = "users";
       configDir = "/home/${id.user}/.config/syncthing";
-
       guiAddress = "0.0.0.0:8384";
-
       overrideDevices = false;
       overrideFolders = false;
     };

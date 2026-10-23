@@ -1,9 +1,0 @@
-#!/usr/bin/env fish
-
-begin
-    echo '```diff'
-    git --no-pager diff --no-color $argv
-    echo '```'
-    echo ''
-    echo 'Explain this commit concisely and give it a message.'
-end | wl-copy

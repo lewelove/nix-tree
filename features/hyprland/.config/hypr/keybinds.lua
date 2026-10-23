@@ -8,7 +8,7 @@
 -- powermenu
 hl.bind (
   "CONTROL + ALT + Delete",
-  hl.dsp.exec_cmd("powermenu.sh") )
+  hl.dsp.exec_cmd("powermenu") )
 
 -- btop
 hl.bind (
@@ -204,7 +204,7 @@ hl.bind (
 
 hl.bind (
   "SUPER + SHIFT + V",
-  hl.dsp.exec_cmd("wrap-paste.sh") )
+  hl.dsp.exec_cmd("wrap-paste") )
 
 hl.bind (
   "SUPER + Apostrophe",
@@ -212,14 +212,5 @@ hl.bind (
 
 hl.bind (
   "SUPER + Semicolon",
-  hl.dsp.exec_cmd("fuzzel-copy.sh") )
-
--- llm exec commands
-hl.bind (
-  "SUPER + BracketLeft",
-  hl.dsp.exec_cmd("fuzzel-llm-system-prompts.sh") )
-
-hl.bind (
-  "SUPER + BracketRight",
-  hl.dsp.exec_cmd("fuzzel-llm-instructions.sh") )
+  hl.dsp.exec_cmd("fuzzel-copy") )
 

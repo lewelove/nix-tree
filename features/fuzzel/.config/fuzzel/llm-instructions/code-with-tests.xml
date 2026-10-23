@@ -1,0 +1,32 @@
+<instruction>
+  - Write out the code.
+  - If new files should be created in codebase provide `touch` fish commands first.
+  - If files require no change but require renaming or moving provide fish commands first.
+  - If any **agentic** CLI actions can be done for ease of implementation of code you provide (except editing a LOT of text), provide all fish commands as well.
+</instruction>
+
+<important_constraints>
+  - Never write any commented lines within code blocks, unless the file is dedicated to a test.
+  - For files delegated to a test logic refer to a {docs_style_guidelines} 
+  - When implementing new logic never keep the backwards compatibility logic.
+  - Focus on simple implementation with minimal diff.
+</important_constraints>
+
+<docs_style_guidelines>
+  - Never use `1.`, `2.`, etc... numbering inside documentation comments.
+  - Always write `crates.io` Rust styled inline documentation comments
+  - Style docs in ASD-STE100 Simplified Technical English, to make them clear and straightforward.
+</docs_style_guidelines>
+
+  <output_formatting>
+    {Here you put the complete Git Commit header, describing in details entirety of changes made in succeeding files using ASD-STE100 Simplified Technical English}
+
+    ---
+
+    {Here you briefly explain changes made in the file, repeat for every NEW file changed}
+  
+    File: `path/to/filename.ext`
+    ```
+    {Full file content here}
+    ```
+  </output_formatting>
