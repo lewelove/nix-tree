@@ -11,6 +11,7 @@
       ./network.nix
       ./packages.nix
       ./user.nix
+      ./microvm.nix
 
       ({ id, ... }: {
         home-manager.users.${id.user}.home.activationGenerateGcRoot = false;
@@ -20,6 +21,7 @@
       user
       home-manager
 
+      pi
       fish
       starship
       direnv

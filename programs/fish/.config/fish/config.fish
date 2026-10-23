@@ -18,7 +18,6 @@ if status is-interactive
 
   alias ls "eza"
   alias x+ "chmod +x"
-  alias lg "lazygit"
   alias e "superfile"
 
   alias clients "hyprctl clients | rg -A 3 'class'"

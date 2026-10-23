@@ -27,6 +27,9 @@
       isp
       theme
 
+      # Network
+      sing-box
+
       # Scripts
       cliphist-copy
       nrs
@@ -71,7 +74,6 @@
       audio
       imv
 
-      ssh
       git
       nvim-gui
       zen-browser
