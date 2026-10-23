@@ -1,4 +1,6 @@
-{ id, ... }: {
+{ id, ... }:
+
+{
   services.openssh = {
     enable = true;
     hostKeys = [

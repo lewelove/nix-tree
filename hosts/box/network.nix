@@ -1,4 +1,6 @@
-{ ... }: {
+{ ... }:
+
+{
   networking.firewall.trustedInterfaces = [ "tun0" ];
 
   services.sing-box = {
