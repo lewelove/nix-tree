@@ -75,6 +75,7 @@
       git
       nvim-gui
       zen-browser
+      pi
 
       ayugram
       bitwarden

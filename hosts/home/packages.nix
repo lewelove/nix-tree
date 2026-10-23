@@ -2,15 +2,10 @@
     environment.systemPackages = with pkgs; [
       wget
       unzip
-      gcc
       tree
-      tree-sitter
       killall
       jq
-      jaq
-      yq-go
       ydotool
-      wtype
       wev
       xhost
       pulseaudio
@@ -29,17 +24,13 @@
       qrencode
       gparted
 
-      fuzzel
       libnotify
       nemo
-      hyprshot
-      hyprpicker
       wl-clipboard
       gnome-calculator
       gnome-clocks
       nicotine-plus
       peazip
-      marktext
       zoxide
       tor-browser
 
@@ -49,7 +40,6 @@
       fastfetch
       tmux
       hyperfine
-      lazygit
       git-filter-repo
       taplo
       yazi

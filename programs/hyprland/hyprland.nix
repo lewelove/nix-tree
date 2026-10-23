@@ -8,6 +8,11 @@
       xwayland.enable = true;
     };
 
+    environment.systemPackages = with pkgs; [
+      hyprshot
+      hyprpicker
+    ];
+
     security.polkit.enable = true;
 
     xdg.portal = {

@@ -100,6 +100,7 @@
         fuzzel-bookmarks
         fuzzel-copy
         fuzzel-file-paste
+        pkgs.fuzzel
       ];
 
       hm.link.".config/fuzzel" = ./.config/fuzzel;
