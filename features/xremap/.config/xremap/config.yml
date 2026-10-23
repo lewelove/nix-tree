@@ -1,0 +1,19 @@
+modmap:
+  - name: Global Keyboard Remaps
+    device:
+      only:
+        - "Keychron Keychron C1"
+    remap:
+      KEY_CAPSLOCK: KEY_ESC
+      KEY_RIGHTSHIFT: KEY_BACKSPACE
+      # KEY_KP0: KEY_0
+      # KEY_KP1: KEY_1
+      # KEY_KP2: KEY_2
+      # KEY_KP3: KEY_3
+      # KEY_KP4: KEY_4
+      # KEY_KP5: KEY_5
+      # KEY_KP6: KEY_6
+      # KEY_KP7: KEY_7
+      # KEY_KP8: KEY_8
+      # KEY_KP9: KEY_9
+      # KEY_KPDOT: KEY_DOT

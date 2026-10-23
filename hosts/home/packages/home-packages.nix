@@ -1,11 +1,7 @@
-{ inputs, ... }:
+{ ... }:
 
 {
-  flake.nixosModules.packages = { pkgs, ... }: {
-    imports = [ inputs.nix-flatpak.nixosModules.nix-flatpak ];
-
-    services.flatpak.enable = true;
-
+  flake.nixosModules.home-packages = { pkgs, ... }: {
     environment.systemPackages = with pkgs; [
       wget
       unzip
@@ -41,7 +37,6 @@
       libnotify
       awww
       nemo
-      xremap
       hyprshot
       hyprpicker
       wl-clipboard
@@ -56,12 +51,10 @@
       foot
       kitty
       btop
-      repomix
       ripgrep
       bat
       fd
       fastfetch
-      starship
       tmux
       hyperfine
       lazygit
@@ -112,12 +105,8 @@
 
     hm = {
       link = {
-        ".bashrc" = ./.bashrc;
         ".scripts" = ./.scripts;
         ".applications" = ./.applications;
-        ".config/starship.toml" = ./.config/starship.toml;
-        ".config/mimeapps.list" = ./.config/mimeapps.list;
-        ".config/repomix" = ./.config/repomix;
       };
     };
   };

@@ -19,10 +19,17 @@
       bluetooth
       virtualization
 
-      packages
+      home-packages
       home-manager
       secrets
       web-apps
+
+      bash
+      fish
+      starship
+      mimeapps
+      repomix
+      xremap
 
       ssh
       git
@@ -41,9 +48,10 @@
       dale
       figma
       photopea
-      syncthing
+      syncthing-web-app
 
       chromium-isp
+      steam
       steam-isp
 
       hyprland
@@ -51,15 +59,19 @@
       rmpc
       listenbrainz
       mympd
+      mympd-web-app
 
-      navidrome
-      soulseek
-      transmission
-      v2raya
+      navidrome-web-app
+      jellyfin-web-app
+      qbittorrent-web-app
+      slskd-web-app
+      transmission-web-app
+      v2raya-web-app
       mpv
 
       # Host Specific
       home-hardware
+      home-syncthing
     ];
   };
 }
