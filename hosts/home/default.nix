@@ -20,7 +20,9 @@
       virtualization
 
       home-manager
+      secrets
       hyprland
+      mpd
 
       # Host Specific
       home-hardware

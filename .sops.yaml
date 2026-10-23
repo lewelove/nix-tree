@@ -1,0 +1,13 @@
+keys:
+  - &user_lewelove age1fsyj8whkph3xdvadrk0jycnkfwd70shah5sxksh59qcefthp648sks0djm
+  - &host_lab age1288u3z7scjue5yxvsnyztn72zlg6qvxtg2sn58qsu70t5c5z0sfs7d4kym
+  - &host_home age1tel3ptdn9mpvluw65ulh99n50pyad7y65xyvun6c3sfjl7tzr9esks2wfp
+
+creation_rules:
+  - path_regex: secrets\.yaml$
+    key_groups:
+      - age:
+          - *user_lewelove
+          - *host_lab
+          - *host_home
+
