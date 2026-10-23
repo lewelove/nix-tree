@@ -1,4 +1,4 @@
-{ self, ... }:
+{ ... }:
 
 {
   flake.nixosModules.mpd = { pkgs, id, config, ... }:
@@ -21,8 +21,6 @@
       });
     in
     {
-      imports = [ self.nixosModules.web-apps ];
-
       sops.secrets."listenbrainz-token" = { };
 
       sops.templates."listenbrainz-mpd.env" = {
@@ -78,7 +76,7 @@
           Install.WantedBy = [ "default.target" ];
         };
 
-        link.".config/rmpc" = ./config/rmpc;
+        link.".config/rmpc" = ./.config/rmpc;
       };
     };
 }

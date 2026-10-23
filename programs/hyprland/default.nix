@@ -19,8 +19,13 @@
       };
     };
 
+    webApps.hyprland-wiki = {
+      name = "Hyprland Wiki";
+      url = "https://wiki.hypr.land";
+    };
+
     hm = {
-      link.".config/hypr" = ./config;
+      link.".config/hypr" = ./.config/hypr;
 
       systemd.user.targets.hyprland-session = {
         Unit = {

@@ -21,6 +21,7 @@
 
       home-manager
       secrets
+      web-apps
       hyprland
       mpd
 

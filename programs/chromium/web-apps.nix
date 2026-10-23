@@ -9,7 +9,7 @@
         options = {
           name = lib.mkOption { type = lib.types.str; };
           url = lib.mkOption { type = lib.types.str; };
-          icon = lib.mkOption { type = lib.types.str; };
+          icon = lib.mkOption { type = lib.types.nullOr lib.types.str; default = null; };
         };
       });
       default = {};
@@ -17,7 +17,7 @@
 
     config.hm = { osConfig, ... }: {
       xdg.desktopEntries = lib.mapAttrs' (id: app:
-        lib.nameValuePair app.name {
+        lib.nameValuePair id {
           inherit (app) name icon;
           exec = "${osConfig.chromium}/bin/chromium-browser --app=${app.url}";
           terminal = false;
