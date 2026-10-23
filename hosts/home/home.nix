@@ -5,10 +5,13 @@
     system = "x86_64-linux";
     specialArgs = { inherit inputs self; };
     modules = [
+      inputs.disko.nixosModules.disko
+
       ./system.nix
       ./network.nix
       ./packages.nix
       ./hardware.nix
+      ./disko.nix
       ./games.nix
       ./home-manager.nix
       ./box-vm.nix

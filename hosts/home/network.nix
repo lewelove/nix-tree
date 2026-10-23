@@ -1,4 +1,14 @@
 { pkgs, ... }: {
+  fileSystems."/mnt/servers/1000xlab" = {
+    device = "192.168.1.100:/mnt/1000xlab";
+    fsType = "nfs";
+    options = [
+      "x-systemd.automount"
+      "noauto"
+      "x-systemd.idle-timeout=600"
+    ];
+  };
+
   networking = {
     hostName = "home";
     networkmanager.enable = true;
