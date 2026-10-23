@@ -13,7 +13,7 @@
       nv
     ];
 
-    hm.link.".config/nvim" = ./config;
+    hm.link.".config/nvim" = ./.config/nvim;
   };
 
   flake.nixosModules.nvim-gui = { pkgs, ... }: let

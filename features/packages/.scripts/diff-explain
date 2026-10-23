@@ -1,0 +1,9 @@
+#!/usr/bin/env fish
+
+begin
+    echo '```diff'
+    git --no-pager diff --no-color $argv
+    echo '```'
+    echo ''
+    echo 'Explain this PR, what it does, and how it improves/degrades things.'
+end | wl-copy

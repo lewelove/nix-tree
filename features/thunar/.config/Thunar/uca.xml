@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+<action>
+	<icon>utilities-terminal</icon>
+	<name>Open Terminal Here</name>
+	<submenu></submenu>
+	<unique-id>1759649936900221-1</unique-id>
+	<command>exec alacritty --working-directory %f</command>
+	<description></description>
+	<range></range>
+	<patterns>*</patterns>
+	<startup-notify/>
+	<directories/>
+</action>
+<action>
+	<icon>copyq</icon>
+	<name>Copy Full Path</name>
+	<submenu></submenu>
+	<unique-id>1764594372543433-1</unique-id>
+	<command>exec echo -n %f | wl-copy</command>
+	<description></description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon>image-x-bmp</icon>
+	<name>Set as Wallpaper</name>
+	<submenu></submenu>
+	<unique-id>1765654861522815-1</unique-id>
+	<command>change-wallpaper.sh &quot;%f&quot;</command>
+	<description>Sets image as wallpaper using swww</description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon>image-x-tiff</icon>
+	<name>Cover Resize</name>
+	<submenu></submenu>
+	<unique-id>1776629176919456-1</unique-id>
+	<command>/home/lewelove/dev/album_curation/cover_resize/.build/bin/cover_resize %f</command>
+	<description></description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<image-files/>
+</action>
+<action>
+	<icon></icon>
+	<name>Unzip File</name>
+	<submenu></submenu>
+	<unique-id>1777025366280687-1</unique-id>
+	<command>unzip %f</command>
+	<description></description>
+	<range>*</range>
+	<patterns>*</patterns>
+	<other-files/>
+</action>
+</actions>

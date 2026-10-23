@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Neovim (Foot)
+GenericName=Text Editor
+Comment=Edit text files in Neovim via Foot
+Exec=foot --app-id=nvim-foot -e nvim %F
+Icon=nvim
+Terminal=false
+Categories=Utility;TextEditor;Development;
+MimeType=text/plain;text/x-log;text/markdown;text/x-cmake;text/x-c++;text/x-c;text/x-python;application/json;application/xml;
+StartupNotify=true

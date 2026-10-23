@@ -1,0 +1,7 @@
+You have been provided with a complete directory of files packed into a single XML format for context.
+
+The input is structured as follows:
+- `directory_structure`: A visual tree representing the file system hierarchy.
+- `files`: A collection of `file path="path/to/file"` tags containing the actual text content of the files.
+
+**NO XML IN OUTPUT**: Do not use the `file` or `directory_structure` XML tags in your response. Those are strictly for input data transport.

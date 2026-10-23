@@ -1,6 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-26.05";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -10,6 +11,16 @@
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
+
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
     };
 
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -24,7 +35,7 @@
         ./core
         ./modules
         ./hosts
-        ./programs
+        ./features
         ./secrets
       ];
     };

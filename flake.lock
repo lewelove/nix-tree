@@ -53,6 +53,21 @@
         "type": "github"
       }
     },
+    "nix-flatpak": {
+      "locked": {
+        "lastModified": 1791644268,
+        "narHash": "sha256-f7Z4PmfnRxf7+37NN48ep+KsQauGtL5REE99pJtMNp8=",
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "rev": "02656785ab214fa1c9655f1beaaf0269eeeec2ca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1792502884,
@@ -84,13 +99,32 @@
         "type": "github"
       }
     },
+    "nixpkgs-stable": {
+      "locked": {
+        "lastModified": 1792615934,
+        "narHash": "sha256-MlvRfa1O5Cqc2/a+gG+l9TSuowEoCKCmrJ1d9oAVm0I=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "da6dc0e7b26060f2f71ce3ef7088fb56ee44fa36",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-26.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "import-tree": "import-tree",
+        "nix-flatpak": "nix-flatpak",
         "nixpkgs": "nixpkgs",
-        "sops-nix": "sops-nix"
+        "nixpkgs-stable": "nixpkgs-stable",
+        "sops-nix": "sops-nix",
+        "zen-browser": "zen-browser"
       }
     },
     "sops-nix": {
@@ -110,6 +144,29 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "zen-browser": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792595242,
+        "narHash": "sha256-kH/E0uJDslOgYcnmU+c0cm6HrUjsEtvZQKZtuQ1+uvo=",
+        "owner": "0xc000022070",
+        "repo": "zen-browser-flake",
+        "rev": "f19490ac889eabb05bdb7e8dcb85225ee75bd87b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0xc000022070",
+        "repo": "zen-browser-flake",
         "type": "github"
       }
     }

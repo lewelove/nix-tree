@@ -1,0 +1,35 @@
+[Default Applications]
+text/html=zen-beta.desktop
+x-scheme-handler/http=zen-beta.desktop
+x-scheme-handler/https=zen-beta.desktop
+x-scheme-handler/about=zen-beta.desktop
+x-scheme-handler/unknown=zen-beta.desktop
+text/plain=nvl.desktop
+text/markdown=nvl.desktop
+text/x-log=nvl.desktop
+text/x-python=nvl.desktop
+text/x-lua=nvl.desktop
+text/x-shellscript=nvl.desktop
+text/x-shellscript=nvl.desktop
+text/x-sh=nvl.desktop
+application/x-cue=nvl.desktop
+application/json=nvl.desktop
+application/xml=nvl.desktop
+application/toml=nvl.desktop
+application/x-yaml=nvl.desktop
+application/x-shellscript=kitty-open.desktop
+application/x-sh=nvl.desktop
+inode/directory=thunar.desktop
+x-scheme-handler/tg=userapp-AyuGram Desktop-R9ALQ3.desktop
+x-scheme-handler/tonsite=userapp-AyuGram Desktop-JD9JQ3.desktop
+image/vnd.adobe.photoshop=photocraft.desktop
+
+[Added Associations]
+image/jpeg=imv-dir.desktop
+image/png=imv-dir.desktop
+image/webp=imv-dir.desktop
+application/x-cue=nvl.desktop;nvim.desktop;
+application/x-shellscript=nvim.desktop;kitty-open.desktop;
+x-scheme-handler/tg=userapp-AyuGram Desktop-R9ALQ3.desktop;
+x-scheme-handler/tonsite=userapp-AyuGram Desktop-JD9JQ3.desktop;
+image/vnd.adobe.photoshop=photocraft.desktop;

@@ -1,0 +1,33 @@
+add_newline = false
+
+format = """
+[$hostname](blue) [$directory](purple) $git_branch
+$character
+"""
+
+[time]
+disabled = false
+format = "$time"
+time_format = "%H:%M"
+
+[username]
+show_always = true
+format = "$user"
+
+[hostname]
+ssh_only = false
+format = "$hostname"
+style = "blue"
+
+[directory]
+format = "$path"
+style = "cyan"
+
+[character]
+success_symbol = "[❯](bright-black)"
+# error_symbol = "[\\[](bright-black)[>](bright-black)[\\]](bright-black)"
+
+[custom.icon]
+when = "true"
+command = "hostname | grep -q home && echo 🏠 || echo 🧬"
+format = "$output"
