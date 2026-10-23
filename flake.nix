@@ -13,6 +13,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    microvm = {
+      url = "github:astro/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
     zen-browser = {
@@ -34,7 +39,7 @@
       imports = (map inputs.import-tree [
         ./core
         ./modules
-        ./features
+        ./programs
         ./scripts
         ./secrets
       ]) ++ [

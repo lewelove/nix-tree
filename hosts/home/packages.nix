@@ -30,9 +30,7 @@
       gparted
 
       fuzzel
-      mako
       libnotify
-      awww
       nemo
       hyprshot
       hyprpicker
@@ -45,9 +43,6 @@
       zoxide
       tor-browser
 
-      foot
-      kitty
-      btop
       ripgrep
       bat
       fd
@@ -59,7 +54,6 @@
       taplo
       yazi
       eza
-      devenv
       yt-dlp
       monolith
       android-tools
@@ -69,8 +63,6 @@
 
       distrobox
 
-      imv
-      mpc
       flac
       flac2all
       mediainfo

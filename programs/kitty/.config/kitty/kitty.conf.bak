@@ -1,0 +1,60 @@
+font_size        10.0
+
+# text_composition_strategy 1.2 0
+# text_composition_strategy platform
+
+window_padding_width 16
+
+# modify_font cell_height 140%
+# modify_font cell_width 105%
+# adjust_column_width 1
+
+background_opacity 0.92
+
+# --- Keybinds ---
+map ctrl+l combine : clear_terminal to_cursor reset : clear_terminal scrollback reset
+
+# --- Cursor ---
+cursor_shape beam
+cursor none
+cursor_text_color background
+cursor_trail 1
+cursor_trail_decay 0.0 0.05
+confirm_os_window_close 0
+cursor_blink_interval 0
+
+# --- Color Scheme ---
+foreground #CCCCCC
+background #070707
+
+# Black
+color0 #333333
+color8 #555555
+# Red
+color1 #EA4335
+color9 #EA4335
+# Green
+color2 #34A853
+color10 #34A853
+# Yellow
+color3 #FBBC04
+color11 #FBBC04
+# Blue
+color4 #4285F4
+color12 #4285F4
+# Magenta
+color5 #A142F4
+color13 #A142F4
+# Cyan
+color6 #4285F4
+color14 #4285F4
+# White
+color7 #CCCCCC
+color15 #CCCCCC
+
+# BEGIN_KITTY_FONTS
+font_family      family='CommitMono Nerd Font' features=-calt
+bold_font        auto
+italic_font      family='CommitMono Nerd Font' features=-calt
+bold_italic_font family='CommitMono Nerd Font' features=-calt
+# END_KITTY_FONTS

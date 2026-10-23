@@ -3,11 +3,15 @@
 {
   flake.nixosConfigurations.home = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
+    specialArgs = { inherit inputs self; };
     modules = [
       ./system.nix
       ./network.nix
       ./packages.nix
       ./hardware.nix
+      ./games.nix
+      ./home-manager.nix
+      ./box-vm.nix
     ] ++ (with self.nixosModules; [
       # Core
       id
@@ -18,6 +22,7 @@
       # Modules
       nix-ld
       isp
+      theme
 
       # Scripts
       cliphist-copy
@@ -45,6 +50,23 @@
       repomix
       xremap
       fuzzel
+
+      awww
+      polkit-agent
+      btop
+      devenv
+      direnv
+
+      alacritty
+      superfile
+      photocraft
+      mpc
+
+      foot
+      kitty
+      mako
+      audio
+      imv
 
       ssh
       git
