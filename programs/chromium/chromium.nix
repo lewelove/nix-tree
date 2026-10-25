@@ -1,49 +1,36 @@
-{ ... }:
+{ self, ... }:
 
 {
   flake.nixosModules.chromium = { pkgs, lib, config, ... }:
     let
-      fetchExtension = { id, hash }: let
-        crx = pkgs.fetchurl {
-          url = "https://clients2.google.com/service/update2/crx?response=redirect&acceptformat=crx2,crx3&prodversion=${lib.versions.major pkgs.ungoogled-chromium.version}&x=id%3D${id}%26installsource%3Dondemand%26uc";
-          name = "${id}.crx";
-          sha256 = hash;
-        };
-      in {
-        inherit id;
-        drv = pkgs.runCommand "ext-${id}" { nativeBuildInputs = [ pkgs.unzip ]; } ''
-          unzip ${crx} -d $out || true
-        '';
-      };
+      ublockOrigin = self.lib.ublockOrigin { inherit pkgs lib; };
 
       extensions = {
-        ublock-origin = rec {
-          id = "mdcpogggagpjibjhpohkefbfgfaepcik";
-          drv = pkgs.stdenv.mkDerivation rec {
-            pname = "ublock-origin";
-            version = "1.68.0";
+        sponsorblock = {
+          drv = pkgs.stdenv.mkDerivation {
+            pname = "sponsorblock";
+            version = "6.1.7";
             src = pkgs.fetchurl {
-              url = "https://github.com/gorhill/uBlock/releases/download/${version}/uBlock0_${version}.chromium.zip";
-              hash = "sha256-lpb7CN2QbnH10gD+EH7YUptQMri1kLTUz0nTvxMgEOM=";
+              url = "https://github.com/ajayyy/SponsorBlock/releases/download/6.1.7/ChromeExtension.zip";
+              hash = "sha256-fI49yLXlYLSAro798o9PEQH84MwyQ0Viozaonkli7aM=";
             };
             nativeBuildInputs = [ pkgs.unzip ];
-            unpackPhase = "unzip $src -d .";
-            installPhase = "mkdir -p $out; cp -r uBlock0.chromium/* $out/";
+            dontUnpack = true;
+            installPhase = ''
+              runHook preInstall
+              mkdir -p $out
+              unzip -q $src -d $out
+              runHook postInstall
+            '';
           };
-        };
-
-        sponsorblock = fetchExtension {
-          id = "mnjggcdmjocbbbhaepdhchncahnbgone";
-          hash = "sha256-nE5FE3Eo1jG8sT1KYjVl8JRbmAiyhN8IZObHsAIb0wY=";
         };
       };
 
       trustedOrigins = "http://vscode.localhost,http://vellum.localhost,http://qbittorrent.lab,http://excalidraw.localhost";
 
-      commonArgs = [
+      baseArgs = [
         "--test-type"
         "--unsafely-treat-insecure-origin-as-secure=${trustedOrigins}"
-        "--load-extension=${extensions.ublock-origin.drv}"
         "--extension-mime-request-handling=always-prompt-for-install"
         "--no-default-browser-check"
         "--restore-last-session"
@@ -54,7 +41,42 @@
         "--force-color-profile=srgb"
       ];
 
+      loadedExtensions = [
+        ublockOrigin.extensions.chromium
+        extensions.sponsorblock.drv
+      ];
+
+      commonArgs = baseArgs ++ [
+        "--load-extension=${lib.concatMapStringsSep "," toString loadedExtensions}"
+      ];
+
       chromiumWrapper = pkgs.writeShellScriptBin "chromium-browser" ''
+        set -euo pipefail
+
+        profile="''${XDG_CONFIG_HOME:-$HOME/.config}/chromium"
+        for arg in "$@"; do
+          case "$arg" in
+            --user-data-dir=*) profile="''${arg#--user-data-dir=}" ;;
+          esac
+        done
+
+        prefs="$profile/Default/Preferences"
+        mkdir -p "$(dirname "$prefs")"
+
+        # --load-extension extensions land as unpacked extensions, which Chromium
+        # disables (DISABLE_UNSUPPORTED_DEVELOPER_EXTENSION) unless the
+        # extensions.ui.developer_mode pref is set: extension_service.cc:595.
+        # The ExtensionDeveloperModeSettings policy can only disallow, never
+        # allow, so preseed the pref. Idempotent: no write once it is true.
+        if [ -f "$prefs" ]; then
+          if ! ${pkgs.jq}/bin/jq -e '.extensions.ui.developer_mode == true' "$prefs" >/dev/null 2>&1; then
+            ${pkgs.jq}/bin/jq '.extensions.ui.developer_mode = true' "$prefs" > "$prefs.tmp"
+            mv "$prefs.tmp" "$prefs"
+          fi
+        else
+          printf '%s\n' '{"extensions":{"ui":{"developer_mode":true}}}' > "$prefs"
+        fi
+
         exec ${pkgs.ungoogled-chromium}/bin/chromium \
           ${lib.strings.escapeShellArgs commonArgs} \
           "$@" >/dev/null 2>&1
@@ -67,14 +89,17 @@
         description = "Wrapped Chromium package used for web apps";
       };
 
-      config.hm = {
-        programs.chromium = {
+      config = {
+        environment.etc."chromium/policies/managed/ublock-origin.json".text =
+          builtins.toJSON ublockOrigin.policies.chromium;
+
+        hm.programs.chromium = {
           enable = true;
           package = pkgs.ungoogled-chromium;
           commandLineArgs = commonArgs;
         };
 
-        systemd.user.services.chromium-service = {
+        hm.systemd.user.services.chromium-service = {
           Unit = {
             Description = "Chromium Background Service";
             PartOf = [ "graphical-session.target" ];
