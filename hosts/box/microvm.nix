@@ -4,6 +4,7 @@ let
   sharedProjects = [
     "cloned"
     "datamile"
+    "nix-config"
   ];
 
   mkDevShare = name: {
