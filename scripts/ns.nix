@@ -5,7 +5,7 @@
     let
       ns = pkgs.writeShellApplication {
         name = "ns";
-        runtimeInputs = with pkgs; [ git stow repomix coreutils gum rsync openssh ];
+        runtimeInputs = with pkgs; [ git coreutils gum rsync openssh ];
         text = ''
           rb() { gum style --foreground 1 --bold "$*"; }
           gb() { gum style --foreground 2 --bold "$*"; }
@@ -47,24 +47,24 @@
               fi
           fi
 
-          if git remote | grep -q "^lab$"; then
-              RAW_ADDR=$(git remote get-url lab)
-              TARGET_ADDR=''${RAW_ADDR%.git}
-              TARGET_ADDR=''${TARGET_ADDR%/}
+          LAB_HOST="''${LAB_HOST:-lab}"
+          LAB_REPO_PATH="''${LAB_REPO_PATH:-${id.repoPath}}"
 
-              echo
-              gum join --horizontal "$(m "[>] ")" "Mirroring to Lab: " "$(y "$TARGET_ADDR")" "..."
+          echo
+          gum join --horizontal "$(m "[>] ")" "Mirroring to Lab: " "$(y "$LAB_HOST:$LAB_REPO_PATH")" "..."
 
-              if rsync -azq --delete \
-                --exclude ".direnv/" \
-                --exclude "result" \
-                "${id.repoPath}/" "$TARGET_ADDR/";
-              then
-                  gum join --horizontal "$(g "[+] ")" "Lab is now a perfect mirror."
-              else
-                  gum join --horizontal "$(r "[!] ")" "Mirroring to Lab failed."
-                  exit 1
-              fi
+          if ! ssh -o BatchMode=yes -o ConnectTimeout=5 "$LAB_HOST" "mkdir -p '$LAB_REPO_PATH'"; then
+              gum join --horizontal "$(r "[!] ")" "Cannot reach Lab over SSH."
+              exit 1
+          fi
+
+          if rsync -aHAX --delete --no-owner --no-group --protect-args \
+            "${id.repoPath}/" "$LAB_HOST:$LAB_REPO_PATH/";
+          then
+              gum join --horizontal "$(g "[+] ")" "Lab is now a perfect mirror."
+          else
+              gum join --horizontal "$(r "[!] ")" "Mirroring to Lab failed."
+              exit 1
           fi
 
           if [ "$SKIP_GIT" = "false" ]; then
@@ -72,11 +72,13 @@
                   RAW_ADDR=$(git remote get-url origin)
                   TARGET_ADDR=''${RAW_ADDR%.git}
                   TARGET_ADDR=''${TARGET_ADDR%/}
+                  BRANCH=$(git branch --show-current)
+                  BRANCH="''${BRANCH:-main}"
 
                   echo
                   gum join --horizontal "$(m "[>] ")" "Pushing to Origin: " "$(y "$TARGET_ADDR")" "..."
 
-                  if git push -u origin main
+                  if git push -u origin "$BRANCH"
                   then
                       gum join --horizontal "$(g "[+] ")" "Pushed to Origin."
                   else
