@@ -4,26 +4,9 @@
   flake.nixosModules.chromium = { pkgs, lib, config, ... }:
     let
       ublockOrigin = self.lib.ublockOrigin { inherit pkgs lib; };
-
-      extensions = {
-        sponsorblock = {
-          drv = pkgs.stdenv.mkDerivation {
-            pname = "sponsorblock";
-            version = "6.1.7";
-            src = pkgs.fetchurl {
-              url = "https://github.com/ajayyy/SponsorBlock/releases/download/6.1.7/ChromeExtension.zip";
-              hash = "sha256-fI49yLXlYLSAro798o9PEQH84MwyQ0Viozaonkli7aM=";
-            };
-            nativeBuildInputs = [ pkgs.unzip ];
-            dontUnpack = true;
-            installPhase = ''
-              runHook preInstall
-              mkdir -p $out
-              unzip -q $src -d $out
-              runHook postInstall
-            '';
-          };
-        };
+      sponsorblock = self.lib.sponsorblock {
+        inherit pkgs lib;
+        settings = { alreadyInstalled = true; };
       };
 
       trustedOrigins = "http://vscode.localhost,http://vellum.localhost,http://qbittorrent.lab,http://excalidraw.localhost";
@@ -43,7 +26,7 @@
 
       loadedExtensions = [
         ublockOrigin.extensions.chromium
-        extensions.sponsorblock.drv
+        sponsorblock.extensions.chromium
       ];
 
       commonArgs = baseArgs ++ [
@@ -90,8 +73,13 @@
       };
 
       config = {
-        environment.etc."chromium/policies/managed/ublock-origin.json".text =
-          builtins.toJSON ublockOrigin.policies.chromium;
+        environment.etc = lib.mapAttrs' (name: policy:
+          lib.nameValuePair "chromium/policies/managed/${name}.json" {
+            text = builtins.toJSON policy;
+          }) {
+            ublock-origin = ublockOrigin.policies.chromium;
+            sponsorblock = sponsorblock.policies.chromium;
+          };
 
         hm.programs.chromium = {
           enable = true;
