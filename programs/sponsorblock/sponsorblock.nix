@@ -4,7 +4,7 @@
   flake.lib.sponsorblock = { pkgs, lib, settings ? {} }: let
     version = "6.1.7";
 
-    rev = "75a880f0b5d547baa500122a20eefe00af5f6efb";
+    rev = "321b1b29a4c2d818d5267ec8a446ab6f8c56c649";
 
     # Public key pinned in the built manifest, so the extension keeps one ID
     # across versions and does not lose its storage on every bump.
@@ -17,62 +17,11 @@
     # as `settings` win over it, e.g. { settings = { showUpsells = false; }; }
     imported = builtins.fromJSON (builtins.readFile ./config.json);
 
-    # Not settings: identity, server-derived state, progress, device data
-    undeclarableKeys = [
-      "userID"
-      "permissions"
-      "payments"
-      "isVip"
-      "minutesSaved"
-      "skipCount"
-      "sponsorTimesContributed"
-      "submissionCountSinceCategories"
-      "hideDiscordLaunches"
-      "donateClicked"
-      "showPopupDonationCount"
-      "shownDeArrowPromotion"
-      "deArrowInstalled"
-      "ytInfoPermissionGranted"
-      "categoryPillColors"
-      "downvotedSegments"
-      "unsubmittedSegments"
-      "skipProfileTemp"
-      "navigationApiAvailable"
-    ];
-
-    managed = lib.filterAttrs (_: value: value != null)
-      (removeAttrs (imported // settings) undeclarableKeys);
-
-    # Chromium hands `chrome.storage.managed` to an extension only if its
-    # manifest has storage.managed_schema, and the policy engine silently drops
-    # any top-level key the schema does not declare. Chrome's schema dialect
-    # rejects wildcards at the root, so derive a schema from the values.
-    schemaFor = value:
-      if builtins.isBool value then { type = "boolean"; }
-      else if builtins.isInt value then { type = "integer"; }
-      else if builtins.isFloat value then { type = "number"; }
-      else if builtins.isString value then { type = "string"; }
-      else if builtins.isList value then {
-        type = "array";
-        items = if value == [] then { type = "string"; } else schemaFor (builtins.head value);
-      }
-      else if builtins.isAttrs value then {
-        type = "object";
-        properties = builtins.mapAttrs (_: schemaFor) value;
-      }
-      else { type = "string"; };
-
-    schema = {
-      "$schema" = "http://json-schema.org/draft-04/schema#";
-      type = "object";
-      properties = builtins.mapAttrs (_: schemaFor) managed;
-    };
-
     src = pkgs.fetchgit {
       url = "https://github.com/lewelove/SponsorBlock";
       inherit rev;
       fetchSubmodules = true;
-      hash = "sha256-zTUQj5YblBSL4zcz6cIepLjL1+Yv0Y1otLCsBq8Caog=";
+      hash = "sha256-tdeRJ2jU/D8VbzDxMRfdYqysr80dla8AIq20v3QB8zc=";
     };
 
     build = pkgs.buildNpmPackage {
@@ -98,6 +47,19 @@
       '';
     };
 
+    # The extension ships its own managed schema. It is the allowlist: identity,
+    # server state, progress and device data are absent from it, so `settings`
+    # and stale export keys cannot reach the policy.
+    schema = builtins.fromJSON (builtins.readFile "${build}/managed_schema.json");
+
+    unsupported = lib.subtractLists (lib.attrNames schema.properties) (lib.attrNames settings);
+
+    managed = if unsupported == [] then declared else
+      lib.warn "sponsorblock: settings not declarable by the managed schema: ${toString unsupported}" declared;
+
+    declared = lib.filterAttrs (_: value: value != null)
+      (lib.intersectAttrs schema.properties (imported // settings));
+
     extension = pkgs.runCommand "sponsorblock-${version}" {
       nativeBuildInputs = [ pkgs.jq ];
     } ''
@@ -105,11 +67,8 @@
       chmod -R u+w $out
 
       ${pkgs.jq}/bin/jq --arg key "${manifestKey}" \
-        '. + {key: $key, storage: {managed_schema: "managed_schema.json"}}' \
-        $out/manifest.json > manifest.json
+        '. + {key: $key}' $out/manifest.json > manifest.json
       mv manifest.json $out/manifest.json
-
-      printf '%s\n' '${builtins.toJSON schema}' > $out/managed_schema.json
     '';
   in {
     extensions.chromium = extension;
