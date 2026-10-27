@@ -19,7 +19,7 @@
       xdg.desktopEntries = lib.mapAttrs' (id: app:
         lib.nameValuePair id {
           inherit (app) name icon;
-          exec = "${osConfig.chromium}/bin/chromium-browser --app=${app.url}";
+          exec = "${osConfig.chromium.instances.default.package}/bin/chromium --app=${app.url}";
           terminal = false;
         }
       ) osConfig.webApps;

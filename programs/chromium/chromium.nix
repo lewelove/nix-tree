@@ -33,11 +33,22 @@
         "--load-extension=${lib.concatMapStringsSep "," toString loadedExtensions}"
       ];
 
-      chromiumWrapper = pkgs.writeShellScriptBin "chromium-browser" ''
+      v2rayaSocksProxy = "socks5://192.168.1.100:20170";
+
+      binaryName = name: if name == "default" then "chromium" else "chromium-${name}";
+
+      instanceArgs = instance:
+        commonArgs
+        ++ lib.optional (instance.userDataDir != null) "--user-data-dir=${instance.userDataDir}"
+        ++ lib.optional (instance.proxy != null) "--proxy-server=${instance.proxy}"
+        ++ instance.extraArgs;
+
+      mkWrapper = name: instance: pkgs.writeShellScriptBin (binaryName name) ''
         set -euo pipefail
 
+        args=(${lib.strings.escapeShellArgs (instanceArgs instance)})
         profile="''${XDG_CONFIG_HOME:-$HOME/.config}/chromium"
-        for arg in "$@"; do
+        for arg in "''${args[@]}" "$@"; do
           case "$arg" in
             --user-data-dir=*) profile="''${arg#--user-data-dir=}" ;;
           esac
@@ -61,18 +72,50 @@
         fi
 
         exec ${pkgs.ungoogled-chromium}/bin/chromium \
-          ${lib.strings.escapeShellArgs commonArgs} \
+          "''${args[@]}" \
           "$@" >/dev/null 2>&1
       '';
     in
     {
-      options.chromium = lib.mkOption {
-        type = lib.types.package;
-        default = chromiumWrapper;
-        description = "Wrapped Chromium package used for web apps";
+      options.chromium.instances = lib.mkOption {
+        default = {};
+        description = "Chromium instances, each with its own flags";
+        type = lib.types.attrsOf (lib.types.submodule ({ name, config, ... }: {
+          options = {
+            userDataDir = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+              description = "Profile directory; null uses Chromium's default";
+            };
+
+            proxy = lib.mkOption {
+              type = lib.types.nullOr lib.types.str;
+              default = null;
+              description = "Proxy to force, e.g. socks5://host:port; null adds no flag";
+            };
+
+            extraArgs = lib.mkOption {
+              type = lib.types.listOf lib.types.str;
+              default = [];
+              description = "Additional command-line arguments";
+            };
+
+            package = lib.mkOption {
+              type = lib.types.package;
+              readOnly = true;
+              description = "Browser package with this instance's flags baked in";
+            };
+          };
+
+          config.package = mkWrapper name config;
+        }));
       };
 
       config = {
+        chromium.instances.default = {
+          proxy = v2rayaSocksProxy;
+        };
+
         environment.etc = lib.mapAttrs' (name: policy:
           lib.nameValuePair "chromium/policies/managed/${name}.json" {
             text = builtins.toJSON policy;
@@ -83,8 +126,18 @@
 
         hm.programs.chromium = {
           enable = true;
-          package = pkgs.ungoogled-chromium;
-          commandLineArgs = commonArgs;
+          package = config.chromium.instances.default.package;
+          commandLineArgs = [];
+        };
+
+        # The wrapper is a shell script, so it ships no .desktop file of its own.
+        hm.xdg.desktopEntries.chromium = {
+          name = "Chromium";
+          genericName = "Web Browser";
+          exec = "chromium %U";
+          icon = "chromium";
+          terminal = false;
+          categories = [ "Network" "WebBrowser" ];
         };
 
         hm.systemd.user.services.chromium-service = {
@@ -94,7 +147,7 @@
             After = [ "graphical-session.target" ];
           };
           Service = {
-            ExecStart = "${config.chromium}/bin/chromium-browser --silent-launch";
+            ExecStart = "${config.chromium.instances.default.package}/bin/chromium --silent-launch";
             Restart = "on-failure";
             RestartSec = "5s";
             Environment = [ "XDG_CURRENT_DESKTOP=Hyprland" ];

@@ -1,18 +1,22 @@
 { ... }:
 
 {
-  flake.nixosModules.chromium-isp = { pkgs, config, ... }:
+  flake.nixosModules.chromium-isp = { pkgs, config, id, ... }:
     let
       chromium-isp = pkgs.writeShellScriptBin "chromium-isp" ''
-        exec isp ${config.chromium}/bin/chromium-browser \
-          --user-data-dir="$HOME/.config/chromium-isp" \
-          --disable-background-mode \
-          --reduce-user-agent-data-linux-platform-version \
-          --remove-client-hints \
-          "$@"
+        exec isp ${config.chromium.instances.isp.package}/bin/chromium-isp "$@"
       '';
     in
     {
+      chromium.instances.isp = {
+        userDataDir = "${config.users.users.${id.user}.home}/.config/chromium-isp";
+        extraArgs = [
+          "--disable-background-mode"
+          "--reduce-user-agent-data-linux-platform-version"
+          "--remove-client-hints"
+        ];
+      };
+
       environment.systemPackages = [ chromium-isp ];
 
       hm = {

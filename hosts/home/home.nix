@@ -109,6 +109,7 @@
       slskd-web-app
       transmission-web-app
       v2raya-web-app
+      youtube-web-app
       mpv
     ]);
   };
