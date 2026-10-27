@@ -1,7 +1,7 @@
 { self, lib, ... }:
 
 {
-  flake.nixosModules.web-apps = { config, ... }:
+  flake.nixosModules.web-apps = { config, pkgs, ... }:
     let
       appType = lib.types.attrsOf (lib.types.submodule {
         options = {
@@ -11,17 +11,28 @@
         };
       });
 
-      entriesFor = osConfig: instance: apps:
+      # A desktop entry and a PATH command for every declaration.
+      render = osConfig: instance: apps:
         let
           browser = osConfig.chromium.instances.${instance};
-        in
-        lib.mapAttrs' (id: app:
-          lib.nameValuePair id {
+          browserBin = "${browser.package}/bin/${browser.binary}";
+
+          entry = id: app: lib.nameValuePair id {
             inherit (app) name icon;
-            exec = "${browser.package}/bin/${browser.binary} --app=${app.url}";
+            exec = "${browserBin} --app=${app.url}";
             terminal = false;
-          }
-        ) apps;
+          };
+
+          command = id: app: lib.nameValuePair "${id}-web-app" (
+            pkgs.writeShellScriptBin "${id}-web-app" ''
+              exec ${browserBin} --app=${lib.escapeShellArg app.url} "$@"
+            ''
+          );
+        in
+        {
+          entries = lib.mapAttrs' entry apps;
+          commands = lib.attrValues (lib.mapAttrs' command apps);
+        };
     in
     {
       imports = [ self.nixosModules.chromium ];
@@ -51,11 +62,15 @@
           }
         ];
 
-        hm = { osConfig, ... }: {
-          xdg.desktopEntries =
-            entriesFor osConfig "default" osConfig.webApps
-            // entriesFor osConfig "lan" osConfig.webAppsLocal;
-        };
+        hm = { osConfig, ... }:
+          let
+            remote = render osConfig "default" osConfig.webApps;
+            local = render osConfig "lan" osConfig.webAppsLocal;
+          in
+          {
+            home.packages = remote.commands ++ local.commands;
+            xdg.desktopEntries = remote.entries // local.entries;
+          };
       };
     };
 }
