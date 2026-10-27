@@ -24,6 +24,8 @@
       "flakes"
     ];
 
+    boot.kernelPackages = pkgs.linuxPackages_latest;
+
     system.stateVersion = "26.05";
 
     programs.fish.enable = true;

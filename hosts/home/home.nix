@@ -19,9 +19,9 @@
       # Core
       id
       system
-      boot
 
       # Modules
+      oxidation
       nix-ld
       isp
       theme

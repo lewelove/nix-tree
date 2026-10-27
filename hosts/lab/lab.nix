@@ -16,7 +16,7 @@
     ] ++ (with self.nixosModules; [
       id
       system
-      boot
+      oxidation
       home-manager
       secrets
 

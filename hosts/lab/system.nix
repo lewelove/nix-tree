@@ -3,11 +3,6 @@
 {
   boot.kernelModules = [ "tun" ];
 
-  boot.loader.grub = {
-    useOSProber = lib.mkForce true;
-    configurationLimit = 5;
-  };
-
   security.acme = {
     acceptTerms = true;
     defaults.email = id.email;
