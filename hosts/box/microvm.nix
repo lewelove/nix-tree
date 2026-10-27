@@ -33,7 +33,7 @@ in
       "virtio-balloon-pci,free-page-reporting=on"
     ];
     vcpu = 4;
-    mem = 8192;
+    mem = 6144;
 
     storeDiskType = "erofs";
 
