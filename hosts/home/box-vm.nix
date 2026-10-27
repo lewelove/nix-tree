@@ -35,5 +35,6 @@ in
   microvm.vms.box = {
     autostart = true;
     flake = self;
+    restartIfChanged = true;
   };
 }

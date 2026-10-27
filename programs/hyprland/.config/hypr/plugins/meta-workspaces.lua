@@ -18,6 +18,10 @@ local meta_workspaces = {
     key = "I",
     on_created_empty = x.photoeditor,
   },
+  Agents = {
+    key = "A",
+    on_created_empty = x.terminal .. " -e ssh box",
+  },
   Alarms = {
     key = "F12",
     name = "Alarm",
