@@ -3,6 +3,21 @@
 {
   networking.firewall.trustedInterfaces = [ "tun0" ];
 
+  # networkd must not reap sing-box's policy rules and routes.
+  systemd.network.config.networkConfig.ManageForeignRoutingPolicyRules = false;
+
+  # networkd restart wipes tun0 rules; restart sing-box with it.
+  systemd.services.sing-box = {
+    after = [
+      "network.target"
+      "nss-lookup.target"
+      "network-online.target"
+      "systemd-networkd.service"
+    ];
+    requires = [ "systemd-networkd.service" ];
+    partOf = [ "systemd-networkd.service" ];
+  };
+
   services.sing-box = {
     enable = true;
     settings = {
