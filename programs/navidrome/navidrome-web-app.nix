@@ -2,7 +2,7 @@
 
 {
   flake.nixosModules.navidrome-web-app = { ... }: {
-    webApps.navidrome = {
+    webAppsLocal.navidrome = {
       name = "Navidrome";
       url = "https://navidrome.lewelaboratory.duckdns.org";
     };

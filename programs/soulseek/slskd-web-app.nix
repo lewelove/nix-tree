@@ -2,7 +2,7 @@
 
 {
   flake.nixosModules.slskd-web-app = { ... }: {
-    webApps.slskd = {
+    webAppsLocal.slskd = {
       name = "Soulseek";
       url = "http://192.168.1.100:5030";
     };

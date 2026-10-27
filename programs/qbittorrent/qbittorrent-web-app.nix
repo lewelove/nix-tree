@@ -10,7 +10,7 @@
     {
       networking.hosts."${ip}" = [ domain ];
 
-      webApps.qbittorrent = {
+      webAppsLocal.qbittorrent = {
         name = "qBittorrent";
         url = "http://${domain}:${toString port}";
         icon = "qbittorrent";

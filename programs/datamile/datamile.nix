@@ -17,13 +17,13 @@
     {
       environment.systemPackages = [ pkgs.bun datamile-cmd ];
 
-      webApps.datamile = {
+      webAppsLocal.datamile = {
         name = "Datamile";
         url = "http://localhost:4173";
         icon = "datamile";
       };
 
-      webApps.datamile-dev = {
+      webAppsLocal.datamile-dev = {
         name = "Datamile Dev";
         url = "http://localhost:5173";
         icon = "datamile";

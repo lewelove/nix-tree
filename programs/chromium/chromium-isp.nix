@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.chromium-isp = { pkgs, config, id, ... }:
+  flake.nixosModules.chromium-isp = { pkgs, config, ... }:
     let
       chromium-isp = pkgs.writeShellScriptBin "chromium-isp" ''
         exec isp ${config.chromium.instances.isp.package}/bin/chromium-isp "$@"
@@ -9,7 +9,6 @@
     in
     {
       chromium.instances.isp = {
-        userDataDir = "${config.users.users.${id.user}.home}/.config/chromium-isp";
         extraArgs = [
           "--disable-background-mode"
           "--reduce-user-agent-data-linux-platform-version"

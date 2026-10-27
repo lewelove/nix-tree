@@ -33,13 +33,13 @@
         };
       };
 
-      webApps.syncthing-home = {
+      webAppsLocal.syncthing-home = {
         name = homeName;
         url = "http://${homeDomain}";
         icon = "syncthing";
       };
 
-      webApps.syncthing-lab = {
+      webAppsLocal.syncthing-lab = {
         name = labName;
         url = "http://${labDomain}";
         icon = "syncthing";

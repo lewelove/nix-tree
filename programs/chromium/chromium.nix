@@ -1,7 +1,7 @@
 { self, ... }:
 
 {
-  flake.nixosModules.chromium = { pkgs, lib, config, ... }:
+  flake.nixosModules.chromium = { pkgs, lib, config, id, ... }:
     let
       ublockOrigin = self.lib.ublockOrigin { inherit pkgs lib; };
       sponsorblock = self.lib.sponsorblock {
@@ -29,16 +29,17 @@
         sponsorblock.extensions.chromium
       ];
 
-      commonArgs = baseArgs ++ [
-        "--load-extension=${lib.concatMapStringsSep "," toString loadedExtensions}"
-      ];
-
       v2rayaSocksProxy = "socks5://192.168.1.100:20170";
+
+      homeDir = config.users.users.${id.user}.home;
 
       binaryName = name: if name == "default" then "chromium" else "chromium-${name}";
 
       instanceArgs = instance:
-        commonArgs
+        baseArgs
+        ++ lib.optionals (instance.extensions != [ ]) [
+          "--load-extension=${lib.concatMapStringsSep "," toString instance.extensions}"
+        ]
         ++ lib.optional (instance.userDataDir != null) "--user-data-dir=${instance.userDataDir}"
         ++ lib.optional (instance.proxy != null) "--proxy-server=${instance.proxy}"
         ++ instance.extraArgs;
@@ -84,8 +85,16 @@
           options = {
             userDataDir = lib.mkOption {
               type = lib.types.nullOr lib.types.str;
-              default = null;
-              description = "Profile directory; null uses Chromium's default";
+              default =
+                if name == "default" then null
+                else "${homeDir}/.config/chromium-${name}";
+              description = "Profile directory; one per instance, default keeps Chromium's own";
+            };
+
+            extensions = lib.mkOption {
+              type = lib.types.listOf lib.types.package;
+              default = loadedExtensions;
+              description = "Unpacked extensions passed via --load-extension; empty loads none";
             };
 
             proxy = lib.mkOption {
@@ -105,16 +114,42 @@
               readOnly = true;
               description = "Browser package with this instance's flags baked in";
             };
+
+            binary = lib.mkOption {
+              type = lib.types.str;
+              readOnly = true;
+              description = "Binary name of the wrapped browser";
+            };
           };
 
           config.package = mkWrapper name config;
+          config.binary = binaryName name;
         }));
       };
 
       config = {
-        chromium.instances.default = {
-          proxy = v2rayaSocksProxy;
+        chromium.instances = {
+          default = {
+            proxy = v2rayaSocksProxy;
+          };
+
+          lan = {
+            proxy = null;
+            extensions = [ ];
+          };
         };
+
+        # Copies of one profile dir would share cookies and flags silently.
+        assertions = [
+          {
+            assertion =
+              let
+                dirs = lib.catAttrs "userDataDir" (lib.attrValues config.chromium.instances);
+              in
+              lib.length dirs == lib.length (lib.unique dirs);
+            message = "chromium.instances: userDataDir values must be unique";
+          }
+        ];
 
         environment.etc = lib.mapAttrs' (name: policy:
           lib.nameValuePair "chromium/policies/managed/${name}.json" {
