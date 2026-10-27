@@ -18,12 +18,7 @@
     starship
     fastfetch
 
-    ripgrep
-    bat
-    fd
     fzf
-    zoxide
-    eza
 
     mpc
     rmpc

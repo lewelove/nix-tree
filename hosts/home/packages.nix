@@ -31,19 +31,13 @@
       gnome-clocks
       nicotine-plus
       peazip
-      zoxide
       tor-browser
 
-      ripgrep
-      bat
-      fd
       fastfetch
       tmux
       hyperfine
       git-filter-repo
       taplo
-      yazi
-      eza
       yt-dlp
       monolith
       android-tools

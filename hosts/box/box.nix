@@ -18,6 +18,7 @@
     ] ++ (with self.nixosModules; [
       id
       system
+      oxidation
       home-manager
 
       pi
