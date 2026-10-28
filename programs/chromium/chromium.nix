@@ -9,6 +9,14 @@
         settings = { alreadyInstalled = true; };
       };
 
+      youtubeTheater = pkgs.runCommand "youtube-theater-extension" { } ''
+        mkdir -p $out
+        cp ${./extensions/youtube-theater/manifest.json} $out/manifest.json
+        cp ${./extensions/youtube-theater/background.js} $out/background.js
+
+        ${pkgs.jq}/bin/jq -e . $out/manifest.json > /dev/null
+      '';
+
       trustedOrigins = "http://vscode.localhost,http://vellum.localhost,http://qbittorrent.lab,http://excalidraw.localhost";
 
       baseArgs = [
@@ -27,6 +35,7 @@
       loadedExtensions = [
         ublockOrigin.extensions.chromium
         sponsorblock.extensions.chromium
+        youtubeTheater
       ];
 
       v2rayaSocksProxy = "socks5://192.168.1.100:20170";
