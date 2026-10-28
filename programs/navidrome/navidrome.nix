@@ -33,6 +33,8 @@
         SessionTimeout = "720h";
 
         BaseUrl = "https://navidrome.lewelaboratory.duckdns.org";
+
+        Plugins.Enabled = false;
       };
     };
 
