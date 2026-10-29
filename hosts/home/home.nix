@@ -22,6 +22,7 @@
 
       # Modules
       cli-utils
+      cli-networking
       nix-ld
       isp
       theme

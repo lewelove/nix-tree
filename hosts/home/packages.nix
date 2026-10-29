@@ -6,12 +6,9 @@
       pulseaudio
       gnome-disk-utility
       sshfs
-      tcpdump
-      mkcert
       mesa-demos
       waffle
       apitrace
-      openssl
       cryptsetup
       brightnessctl
       ddcutil

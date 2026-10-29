@@ -64,7 +64,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    ethtool
     xray
     v2ray-rules-dat
   ];

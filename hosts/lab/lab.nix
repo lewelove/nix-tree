@@ -17,6 +17,7 @@
       id
       system
       cli-utils
+      cli-networking
       home-manager
       secrets
 
