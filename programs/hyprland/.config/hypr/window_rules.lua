@@ -27,6 +27,12 @@ hl.window_rule ({
   fullscreen = true,
 })
 
+hl.window_rule ({
+  name = "Photocraft",
+  match = { class = "ai.storyteller.photocraft" },
+  fullscreen = true,
+})
+
 -- hl.window_rule ({
 --   name = "thunar",
 --   match = { class = "^(thunar|Thunar)$" },
