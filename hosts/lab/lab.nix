@@ -16,7 +16,7 @@
     ] ++ (with self.nixosModules; [
       id
       system
-      oxidation
+      cli-utils
       home-manager
       secrets
 

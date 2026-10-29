@@ -21,7 +21,7 @@
       system
 
       # Modules
-      oxidation
+      cli-utils
       nix-ld
       isp
       theme

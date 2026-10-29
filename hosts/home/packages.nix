@@ -1,10 +1,5 @@
 { pkgs, ... }: {
     environment.systemPackages = with pkgs; [
-      wget
-      unzip
-      tree
-      killall
-      jq
       ydotool
       wev
       xhost
@@ -70,9 +65,4 @@
 
     programs.dconf.enable = true;
     programs.fuse.userAllowOther = true;
-
-    programs.fzf = {
-      fuzzyCompletion = true;
-      keybindings = true;
-    };
 }
