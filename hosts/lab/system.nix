@@ -26,7 +26,6 @@
 
   users.users.${id.user} = {
     uid = lib.mkForce 1000;
-    extraGroups = lib.mkForce [ "networkmanager" "wheel" "jellyfin" "torrents" ];
     initialPassword = "lab";
   };
 
