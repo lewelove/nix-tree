@@ -1,0 +1,6 @@
+{"steps":[
+  ["channel.target", {"channel": "composite"}],
+  ["layer.new.layer", {"name": "Green Channel"}],
+  ["image.applyImage", {"source": {"channel": "green"}, "blending": "normal", "opacity": 100}]
+]}
+

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "actions": [
+    {
+      "name": "Green Channel to Layer",
+      "steps": [
+        [
+          "file.scripts.browse",
+          { "path": "/home/lewelove/.config/photocraft/Scripts/green-channel-to-layer.json" }
+        ]
+      ],
+      "set": "PhotoCraft Automations",
+      "color": "green"
+    },
+  ]
+}
+

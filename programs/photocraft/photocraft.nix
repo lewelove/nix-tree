@@ -24,6 +24,8 @@
     {
       environment.systemPackages = [ photocraft ];
 
+      hm.link.".config/photocraft" = ./.config/photocraft;
+
       hm.xdg.desktopEntries.photocraft = {
         name = "PhotoCraft";
         genericName = "Image Editor";
