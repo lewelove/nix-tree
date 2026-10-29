@@ -33,16 +33,18 @@
         };
       };
 
-      webAppsLocal.syncthing-home = {
+      webApps.syncthing-home = {
         name = homeName;
         url = "http://${homeDomain}";
         icon = "syncthing";
+        browser = "chromium-lan";
       };
 
-      webAppsLocal.syncthing-lab = {
+      webApps.syncthing-lab = {
         name = labName;
         url = "http://${labDomain}";
         icon = "syncthing";
+        browser = "chromium-lan";
       };
 
     };

@@ -17,6 +17,7 @@
       webApps.mpv-wiki = {
         name = "Mpv Wiki";
         url = "https://mpv.io/manual/stable/";
+        browser = "chromium";
       };
 
       hm.link.".config/mpv" = ./.config/mpv;

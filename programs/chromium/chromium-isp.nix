@@ -1,7 +1,8 @@
 { ... }:
 
 {
-  flake.nixosModules.chromium-isp = { pkgs, config, ... }:
+  flake.nixosModules.chromium-isp =
+    { pkgs, config, ... }:
     let
       chromium-isp = pkgs.writeShellScriptBin "chromium-isp" ''
         exec isp ${config.chromium.instances.isp.package}/bin/chromium-isp "$@"
@@ -9,6 +10,8 @@
     in
     {
       chromium.instances.isp = {
+        install = false;
+        extensions = config.chromium.instances.default.extensions or [ ];
         extraArgs = [
           "--disable-background-mode"
           "--reduce-user-agent-data-linux-platform-version"
@@ -26,7 +29,10 @@
           exec = "chromium-isp %U";
           icon = "chromium";
           terminal = false;
-          categories = [ "Network" "WebBrowser" ];
+          categories = [
+            "Network"
+            "WebBrowser"
+          ];
         };
       };
     };

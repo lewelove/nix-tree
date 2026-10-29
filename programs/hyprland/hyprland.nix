@@ -27,6 +27,7 @@
     webApps.hyprland-wiki = {
       name = "Hyprland Wiki";
       url = "https://wiki.hypr.land";
+      browser = "chromium";
     };
 
     hm = {

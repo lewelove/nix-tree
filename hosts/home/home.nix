@@ -93,6 +93,8 @@
       syncthing
       syncthing-web-app
 
+      chromium
+      chromium-instances
       chromium-isp
       steam
       steam-isp

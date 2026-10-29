@@ -6,6 +6,7 @@
       name = "Figma";
       url = "https://figma.com";
       icon = "figma";
+      browser = "chromium";
     };
 
     hm = {

@@ -35,6 +35,7 @@
         name = "Listenbrainz";
         url = "https://listenbrainz.org";
         icon = "listenbrainz";
+        browser = "chromium";
       };
 
       hm = { osConfig, ... }: {

@@ -44,6 +44,7 @@
       imports = (map inputs.import-tree [
         ./core
         ./features
+        ./modules
         ./programs
         ./scripts
         ./secrets

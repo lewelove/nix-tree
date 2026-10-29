@@ -17,16 +17,18 @@
     {
       environment.systemPackages = [ pkgs.bun datamile-cmd ];
 
-      webAppsLocal.datamile = {
+      webApps.datamile = {
         name = "Datamile";
         url = "http://localhost:4173";
         icon = "datamile";
+        browser = "chromium-lan";
       };
 
-      webAppsLocal.datamile-dev = {
+      webApps.datamile-dev = {
         name = "Datamile Dev";
         url = "http://localhost:5173";
         icon = "datamile";
+        browser = "chromium-lan";
       };
 
       hm.link.".config/datamile" = ./.config/datamile;
