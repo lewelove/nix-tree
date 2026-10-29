@@ -9,9 +9,8 @@
           { "path": "/home/lewelove/.config/photocraft/Scripts/green-channel-to-layer.json" }
         ]
       ],
-      "set": "PhotoCraft Automations",
       "color": "green"
-    },
+    }
   ]
 }
 

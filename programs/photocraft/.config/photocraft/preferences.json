@@ -59,11 +59,11 @@
       ],
       "points": [
         [
-          12.0,
+          0.0,
           0.0
         ],
         [
-          44.0,
+          107.0,
           255.0
         ]
       ],
@@ -178,8 +178,9 @@
     "maximizePsdCompatibility": "always",
     "recentFileCount": 20,
     "recentFiles": [
-      "/home/lewelove/virtual/box/pictures/source1793173501.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/Folders/Pictures & Movies/Album Covers/covers.psd/...I Care Because You Do.psd",
       "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/山下洋輔トリオ・大駱駝艦・ジェラルド大下 - 嵐/Digital Covers/source1793173501.psd",
+      "/home/lewelove/virtual/box/pictures/source1793173501.psd",
       "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/Hijokaidan featuring Akira Sakata - Made in Studio/Digital Covers/source1793171686.psd",
       "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/Hijokaidan featuring Akira Sakata - Made in Studio/Digital Covers/source1793171686.jpg",
       "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/Hijokaidan featuring Akira Sakata - Made in Studio/Digital Covers/R-3923376-1349373623-3926.png",
@@ -306,7 +307,7 @@
       "flipX": false,
       "flipY": false,
       "flow": 1.0,
-      "hardness": 0.4699999988079071,
+      "hardness": 0.05000000074505806,
       "locks": {
         "buildUp": false,
         "colorDynamics": false,
@@ -332,7 +333,7 @@
       },
       "mode": "Normal",
       "noise": false,
-      "opacity": 1.0,
+      "opacity": 0.10000000149011612,
       "pose": {
         "enabled": false,
         "overridePressure": false,
@@ -442,7 +443,7 @@
         },
         "tiltScale": 0.0
       },
-      "size": 103.0,
+      "size": 61.0,
       "smoothing": {
         "adjustForZoom": true,
         "amount": 0.10000000149011612,
@@ -593,6 +594,9 @@
           "Navigator",
           "Histogram",
           "Info"
+        ],
+        "properties": [
+          "Adjustments"
         ]
       },
       "order": [
@@ -612,7 +616,7 @@
       "history": 1,
       "layers": 0,
       "navigator": 0,
-      "properties": 1
+      "properties": 0
     },
     "docking": {
       "hidden": [
@@ -915,6 +919,31 @@
             "size": null,
             "stack": null
           }
+        ],
+        [
+          "adjustments",
+          {
+            "anchor": "properties",
+            "floating": null,
+            "group": {
+              "column": {
+                "iconic": false,
+                "iconic_width": null,
+                "side": "End",
+                "width": 390.5859375
+              },
+              "height": 624.5078125,
+              "minimized": false
+            },
+            "placement": {
+              "Tab": {
+                "before": "history"
+              }
+            },
+            "sibling": [],
+            "size": null,
+            "stack": null
+          }
         ]
       ],
       "layout": {
@@ -923,49 +952,70 @@
           "Split": {
             "axis": "Horizontal",
             "first": {
-              "Tabs": {
-                "active": 0,
-                "panels": [
-                  "canvas"
-                ]
-              }
-            },
-            "second": {
               "Dock": {
                 "columns": [
                   {
                     "groups": [
                       {
-                        "active": 3,
-                        "height": 624.5078125,
-                        "minimized": false,
-                        "panels": [
-                          "properties",
-                          "adjustments",
-                          "history",
-                          "actions"
-                        ]
-                      },
-                      {
                         "active": 0,
-                        "height": 349.4921875,
+                        "height": 536.7421875,
                         "minimized": false,
                         "panels": [
-                          "layers",
-                          "channels"
+                          "properties"
                         ]
                       }
                     ],
                     "iconic": false,
                     "iconic_width": null,
-                    "width": 390.5859375
+                    "width": 320.0390625
                   }
                 ],
-                "side": "End"
+                "side": "Start"
+              }
+            },
+            "second": {
+              "Split": {
+                "axis": "Horizontal",
+                "first": {
+                  "Tabs": {
+                    "active": 0,
+                    "panels": [
+                      "canvas"
+                    ]
+                  }
+                },
+                "second": {
+                  "Dock": {
+                    "columns": [
+                      {
+                        "groups": [
+                          {
+                            "active": 1,
+                            "height": null,
+                            "minimized": false,
+                            "panels": [
+                              "layers",
+                              "actions",
+                              "history",
+                              "channels"
+                            ]
+                          }
+                        ],
+                        "iconic": false,
+                        "iconic_width": null,
+                        "width": 382.796875
+                      }
+                    ],
+                    "side": "End"
+                  }
+                },
+                "size": {
+                  "FixedSecond": 290.0
+                }
               }
             },
             "size": {
-              "FixedSecond": 290.0
+              "FixedFirst": 304.01171875
             }
           }
         }
