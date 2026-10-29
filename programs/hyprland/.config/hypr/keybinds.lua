@@ -173,10 +173,6 @@ hl.bind (
   "SUPER + SHIFT + S",
   hl.dsp.exec_cmd("ns --ng && notify-send '~/nix-config is mirrored'") )
 
-hl.bind (
-  "SUPER + SHIFT + O",
-  hl.dsp.exec_cmd("chromium") )
-
 -- screenshots
 local screenshot = require("scripts.screenshot")
 
