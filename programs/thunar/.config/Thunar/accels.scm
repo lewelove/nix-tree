@@ -92,6 +92,7 @@
 ; (gtk_accel_path "<Actions>/ThunarActionManager/open-with-other" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/invert-selection" "<Primary><Shift>i")
 ; (gtk_accel_path "<Actions>/ThunarBookmarks/80ed1c840ba5765288c155b27ddc65ed" "")
+; (gtk_accel_path "<Actions>/ThunarBookmarks/a1cd6e0d704b3f021f68dbc54ad41797" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/arrange-items-menu" "")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/unselect-all-files" "Escape")
 ; (gtk_accel_path "<Actions>/ThunarStandardView/configure-columns" "")
