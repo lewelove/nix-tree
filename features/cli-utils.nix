@@ -12,6 +12,7 @@
       jq
       yq-go
 
+      moreutils
       file
       less
       tree
