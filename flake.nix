@@ -33,6 +33,11 @@
       };
     };
 
+    ungoogled = {
+      url = "github:lewelove/ungoogled-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
   };
@@ -44,7 +49,6 @@
       imports = (map inputs.import-tree [
         ./core
         ./features
-        ./modules
         ./programs
         ./scripts
         ./secrets

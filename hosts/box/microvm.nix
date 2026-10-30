@@ -5,6 +5,7 @@ let
     "cloned"
     "datamile"
     "nix-config"
+    "ungoogled-flake"
   ];
 
   mkDevShare = name: {

@@ -246,42 +246,6 @@
       passthru.addonId = "uBlock0@raymondhill.net";
     };
 
-    chromiumExtension = pkgs.stdenv.mkDerivation {
-      pname = "ublock-origin";
-      inherit version;
-
-      src = pkgs.fetchurl {
-        url = "https://github.com/gorhill/uBlock/releases/download/${version}/uBlock0_${version}.chromium.zip";
-        hash = "sha256-OTz5VwnRB01AIpcOkBTkNDlcU6giOH8eJfQ76Xz0tYI=";
-      };
-
-      nativeBuildInputs = [ pkgs.unzip ];
-      unpackPhase = "unzip $src -d .";
-
-      installPhase = ''
-        runHook preInstall
-
-        mkdir -p $out
-        cp -r uBlock0.chromium/* $out/
-
-        substituteInPlace $out/js/vapi-background.js \
-          --replace-fail \
-            "bin = await vAPI.storage.get('cachedManagedStorage') || {};" \
-            "bin = {};"
-
-        runHook postInstall
-      '';
-    };
-
-    chromiumExtensionId = let
-      hex = builtins.substring 0 32 (builtins.hashString "sha256" "${chromiumExtension}");
-
-      hexDigit = c: builtins.head (builtins.filter
-        (i: builtins.substring i 1 "0123456789abcdef" == c)
-        (builtins.genList (i: i) 16));
-    in builtins.concatStringsSep "" (builtins.genList
-      (i: builtins.substring (hexDigit (builtins.substring i 1 hex)) 1 "abcdefghijklmnop") 32);
-
     zenPolicy = {
       ExtensionSettings."uBlock0@raymondhill.net" = {
         installation_mode = "force_installed";
@@ -290,21 +254,8 @@
 
       "3rdparty".Extensions."uBlock0@raymondhill.net" = managedSettings;
     };
-
-    chromiumPolicy = {
-      "3rdparty".extensions.${chromiumExtensionId} = managedSettings;
-    };
   in {
-    inherit chromiumExtensionId;
-
-    extensions = {
-      zen = zenExtension;
-      chromium = chromiumExtension;
-    };
-
-    policies = {
-      zen = zenPolicy;
-      chromium = chromiumPolicy;
-    };
+    extensions.zen = zenExtension;
+    policies.zen = zenPolicy;
   };
 }

@@ -15,6 +15,8 @@
       ./games.nix
       ./home-manager.nix
       ./box-vm.nix
+
+      inputs.ungoogled.nixosModules.default
     ] ++ (with self.nixosModules; [
       # Core
       id
@@ -93,7 +95,6 @@
       syncthing
       syncthing-web-app
 
-      chromium
       chromium-instances
       chromium-isp
       steam
