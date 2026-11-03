@@ -6,8 +6,12 @@
     let
       extensions = inputs.ungoogled.lib.mkExtensions {
         inherit pkgs lib;
-        settings.sponsorblock = {
-          alreadyInstalled = true;
+
+        settings = {
+          ublock-origin = import ../ublock-origin/_settings.nix;
+          sponsorblock = {
+            alreadyInstalled = true;
+          };
         };
       };
     in
