@@ -6,6 +6,13 @@
     "showStroke": true,
     "showTip": true
   },
+  "colorPanel": {
+    "background": false,
+    "mode": "hueCube",
+    "ramp": "rgbSpectrum",
+    "webOnly": false,
+    "webSafeRamp": false
+  },
   "colorSettings": {
     "askOnMismatch": true,
     "askOnMissing": false,
@@ -31,11 +38,16 @@
   },
   "dialogs": {
     "file.new": {
+      "__unit": "px",
       "background": "black",
       "depth": 8,
-      "height": 1920,
+      "height": 1000,
       "mode": "rgb",
-      "width": 1920
+      "resolution": 72.0,
+      "width": 1000
+    },
+    "filter.blur.gaussianBlur": {
+      "radius": 75.0
     },
     "image.adjustments.curves": {
       "blue": [
@@ -60,11 +72,11 @@
       ],
       "points": [
         [
-          0.0,
+          70.0,
           0.0
         ],
         [
-          107.0,
+          255.0,
           255.0
         ]
       ],
@@ -185,6 +197,18 @@
     "rasterizeSvgGroupsDeeperThan": 100,
     "recentFileCount": 20,
     "recentFiles": [
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Lossless Album Collection/Neu! - Neu!/Digital Covers/Neu!.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/The British Expeditionary Force - Chapter Two_ Konstellation Neu/Digital Covers/source1793374209.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/Neu! - Neu! 86/Digital Covers/source1793372701.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Lossless Album Collection/Neu! - Neu!/Digital Covers/source1793362311.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/[LP] Collection/[LP] Neu! - Neu! '75/Digital Covers/source1793362311.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/[LP] Collection/[LP] Neu! - Neu! 2/Digital Covers/source1793361303_0.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/[LP] Collection/[LP] Neu! - Neu! '75/Digital Covers/source1793362311.jpg",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/[LP] Collection/[LP] Neu! - Neu! '75/Digital Covers/cover 1080.jpg",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/[LP] Collection/[LP] Neu! - Neu! 2/Digital Covers/source1793361303.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/[LP] Collection/[LP] Neu! - Neu! 2/Digital Covers/source1793361303.jpg",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/[LP] Collection/[LP] Neu! - Neu! 2/Digital Covers/source20250601.psd",
+      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/[LP] Collection/[LP] Neu! - Neu! 2/Digital Covers/source20250601.jpg",
       "/run/media/lewelove/1000xhome/backup-everything/Folders/Pictures & Movies/Album Covers/covers.psd/...I Care Because You Do.psd",
       "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/山下洋輔トリオ・大駱駝艦・ジェラルド大下 - 嵐/Digital Covers/source1793173501.psd",
       "/home/lewelove/virtual/box/pictures/source1793173501.psd",
@@ -192,14 +216,7 @@
       "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/Hijokaidan featuring Akira Sakata - Made in Studio/Digital Covers/source1793171686.jpg",
       "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Virtual Albums/Hijokaidan featuring Akira Sakata - Made in Studio/Digital Covers/R-3923376-1349373623-3926.png",
       "/run/media/lewelove/1000xhome/backup-everything/Folders/Pictures & Movies/Saved/Downloads/Apollo_17_Blue_Marble_original_orientation_(AS17-148-22727).psd",
-      "/run/media/lewelove/1000xhome/backup-everything/Folders/Pictures & Movies/Saved/Downloads/Apollo_17_Blue_Marble_original_orientation_(AS17-148-22727).jpg",
-      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Lossless Album Collection/Autechre - Tri Repetae/Digital Covers/source1785501492.psd",
-      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Lossless Album Collection/Brian Eno - Compact Forest Proposal/Digital Covers/CFP_Remake.psd",
-      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Lossless Album Collection/Aphex Twin - Richard D. James Album [1996 GB Warp WARPCD43]/Digital Covers/Richard D. James Album_.psd",
-      "/run/media/lewelove/1000xhome/backup-everything/Folders/Pictures & Movies/Album Covers/covers.psd/Abbey Road.psd",
-      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Lossless Album Collection/Miles Davis - Nefertiti/Digital Covers/Nefertiti.psd",
-      "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/Lossless Album Collection/Miles Davis - In A Silent Way/Digital Covers/source1789998466.psd",
-      "/run/media/lewelove/1000xhome/backup-everything/Folders/Pictures & Movies/Album Covers/covers.psd/Hard Normal Daddy.psd"
+      "/run/media/lewelove/1000xhome/backup-everything/Folders/Pictures & Movies/Saved/Downloads/Apollo_17_Blue_Marble_original_orientation_(AS17-148-22727).jpg"
     ],
     "recoverOnLaunch": true,
     "saveInBackground": true
@@ -330,7 +347,7 @@
       "flipX": false,
       "flipY": false,
       "flow": 1.0,
-      "hardness": 0.05000000074505806,
+      "hardness": 1.0,
       "locks": {
         "buildUp": false,
         "colorDynamics": false,
@@ -356,7 +373,7 @@
       },
       "mode": "Normal",
       "noise": false,
-      "opacity": 0.10000000149011612,
+      "opacity": 1.0,
       "pose": {
         "enabled": false,
         "overridePressure": false,
@@ -466,7 +483,7 @@
         },
         "tiltScale": 0.0
       },
-      "size": 61.0,
+      "size": 8.0,
       "smoothing": {
         "adjustForZoom": true,
         "amount": 0.10000000149011612,
@@ -580,7 +597,7 @@
       },
       "wetEdges": false
     },
-    "preset": "Hard Round"
+    "preset": null
   },
   "layerMaskOverlay": {
     "color": "#ff0000",
@@ -640,7 +657,7 @@
       "brushes": 0,
       "character": 0,
       "color": 0,
-      "history": 1,
+      "history": 0,
       "layers": 0,
       "navigator": 0,
       "properties": 0
@@ -988,13 +1005,14 @@
                         "height": 536.7421875,
                         "minimized": false,
                         "panels": [
-                          "properties"
+                          "properties",
+                          "actions"
                         ]
                       }
                     ],
                     "iconic": false,
                     "iconic_width": null,
-                    "width": 350.0
+                    "width": 320.0
                   }
                 ],
                 "side": "Start"
@@ -1022,7 +1040,6 @@
                             "minimized": false,
                             "panels": [
                               "layers",
-                              "actions",
                               "history",
                               "channels"
                             ]
@@ -1030,7 +1047,7 @@
                         ],
                         "iconic": false,
                         "iconic_width": null,
-                        "width": 350.0
+                        "width": 320.0
                       }
                     ],
                     "side": "End"
@@ -2615,6 +2632,16 @@
       }
     ],
     "recent_documents": [
+      {
+        "background": "black",
+        "depth": 8,
+        "height": 1000,
+        "mode": "rgb",
+        "resolution": 72.0,
+        "resolutionUnit": "in",
+        "unit": "px",
+        "width": 1000
+      },
       {
         "background": "black",
         "depth": 8,
@@ -11608,7 +11635,7 @@
     "bindings": [],
     "enabled": false
   },
-  "selectedTool": "Brush",
+  "selectedTool": "Eyedropper",
   "shortcutSet": "",
   "shortcutSets": {},
   "shortcuts": {},
@@ -11819,6 +11846,315 @@
           "pulledString": false
         },
         "spacing": 0.10000000149011612,
+        "spacingEnabled": true,
+        "texture": {
+          "brightness": 0.0,
+          "contrast": 0.0,
+          "depth": 1.0,
+          "depthJitter": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "eachTip": false,
+          "enabled": false,
+          "invert": false,
+          "mode": "multiply",
+          "pattern": {
+            "procedural": {
+              "seed": 1,
+              "size": 128,
+              "style": "paper"
+            }
+          },
+          "scale": 1.0
+        },
+        "tip": "round",
+        "transfer": {
+          "enabled": false,
+          "flow": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "mix": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "opacity": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "wetness": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          }
+        },
+        "wetEdges": false
+      },
+      "Brush": {
+        "aliased": false,
+        "angle": 0.0,
+        "background": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "buildUp": false,
+        "buildUpRate": 20.0,
+        "color": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "colorDynamics": {
+          "brightnessJitter": 0.0,
+          "enabled": false,
+          "fgBg": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "hueJitter": 0.0,
+          "perTip": true,
+          "purity": 0.0,
+          "saturationJitter": 0.0
+        },
+        "dualBrush": {
+          "angle": 0.0,
+          "bothAxes": false,
+          "count": 1,
+          "enabled": false,
+          "flip": false,
+          "hardness": 1.0,
+          "mode": "multiply",
+          "roundness": 1.0,
+          "scatter": 0.0,
+          "size": 20.0,
+          "spacing": 0.25,
+          "tip": "round"
+        },
+        "erase": false,
+        "flipX": false,
+        "flipY": false,
+        "flow": 1.0,
+        "hardness": 1.0,
+        "locks": {
+          "buildUp": false,
+          "colorDynamics": false,
+          "dualBrush": false,
+          "noise": false,
+          "pose": false,
+          "protectTexture": false,
+          "scattering": false,
+          "shapeDynamics": false,
+          "smoothing": false,
+          "texture": false,
+          "transfer": false,
+          "wetEdges": false
+        },
+        "mixer": {
+          "cleanAfterStroke": true,
+          "flow": 1.0,
+          "load": 0.5,
+          "loadAfterStroke": true,
+          "mix": 0.5,
+          "sampleAllLayers": false,
+          "wet": 0.5
+        },
+        "mode": "Normal",
+        "noise": false,
+        "opacity": 1.0,
+        "pose": {
+          "enabled": false,
+          "overridePressure": false,
+          "overrideRotation": false,
+          "overrideTilt": false,
+          "overrideTiltX": false,
+          "overrideTiltY": false,
+          "pressure": 1.0,
+          "rotation": 0.0,
+          "tiltX": 0.0,
+          "tiltY": 0.0
+        },
+        "pressureOpacity": false,
+        "pressureSize": false,
+        "protectTexture": false,
+        "roundness": 1.0,
+        "scattering": {
+          "bothAxes": false,
+          "count": 1,
+          "countJitter": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "enabled": false,
+          "scatter": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          }
+        },
+        "seed": 0,
+        "shapeDynamics": {
+          "angle": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "brushProjection": false,
+          "enabled": false,
+          "flipXJitter": false,
+          "flipYJitter": false,
+          "roundness": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "size": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "tiltScale": 0.0
+        },
+        "size": 8.0,
+        "smoothing": {
+          "adjustForZoom": true,
+          "amount": 0.10000000149011612,
+          "catchUp": true,
+          "catchUpOnEnd": true,
+          "enabled": true,
+          "pulledString": false
+        },
+        "spacing": 0.05000000074505806,
         "spacingEnabled": true,
         "texture": {
           "brightness": 0.0,
@@ -12540,17 +12876,340 @@
           }
         },
         "wetEdges": false
+      },
+      "SpotHealing": {
+        "aliased": false,
+        "angle": 0.0,
+        "background": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "buildUp": false,
+        "buildUpRate": 20.0,
+        "color": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "colorDynamics": {
+          "brightnessJitter": 0.0,
+          "enabled": false,
+          "fgBg": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "hueJitter": 0.0,
+          "perTip": true,
+          "purity": 0.0,
+          "saturationJitter": 0.0
+        },
+        "dualBrush": {
+          "angle": 0.0,
+          "bothAxes": false,
+          "count": 1,
+          "enabled": false,
+          "flip": false,
+          "hardness": 1.0,
+          "mode": "multiply",
+          "roundness": 1.0,
+          "scatter": 0.0,
+          "size": 20.0,
+          "spacing": 0.25,
+          "tip": "round"
+        },
+        "erase": false,
+        "flipX": false,
+        "flipY": false,
+        "flow": 1.0,
+        "hardness": 0.699999988079071,
+        "locks": {
+          "buildUp": false,
+          "colorDynamics": false,
+          "dualBrush": false,
+          "noise": false,
+          "pose": false,
+          "protectTexture": false,
+          "scattering": false,
+          "shapeDynamics": false,
+          "smoothing": false,
+          "texture": false,
+          "transfer": false,
+          "wetEdges": false
+        },
+        "mixer": {
+          "cleanAfterStroke": true,
+          "flow": 1.0,
+          "load": 0.5,
+          "loadAfterStroke": true,
+          "mix": 0.5,
+          "sampleAllLayers": false,
+          "wet": 0.5
+        },
+        "mode": "Normal",
+        "noise": false,
+        "opacity": 1.0,
+        "pose": {
+          "enabled": false,
+          "overridePressure": false,
+          "overrideRotation": false,
+          "overrideTilt": false,
+          "overrideTiltX": false,
+          "overrideTiltY": false,
+          "pressure": 1.0,
+          "rotation": 0.0,
+          "tiltX": 0.0,
+          "tiltY": 0.0
+        },
+        "pressureOpacity": false,
+        "pressureSize": false,
+        "protectTexture": false,
+        "roundness": 1.0,
+        "scattering": {
+          "bothAxes": false,
+          "count": 1,
+          "countJitter": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "enabled": false,
+          "scatter": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          }
+        },
+        "seed": 0,
+        "shapeDynamics": {
+          "angle": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "brushProjection": false,
+          "enabled": false,
+          "flipXJitter": false,
+          "flipYJitter": false,
+          "roundness": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "size": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "tiltScale": 0.0
+        },
+        "size": 8.0,
+        "smoothing": {
+          "adjustForZoom": true,
+          "amount": 0.10000000149011612,
+          "catchUp": true,
+          "catchUpOnEnd": true,
+          "enabled": true,
+          "pulledString": false
+        },
+        "spacing": 0.05000000074505806,
+        "spacingEnabled": true,
+        "texture": {
+          "brightness": 0.0,
+          "contrast": 0.0,
+          "depth": 1.0,
+          "depthJitter": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "eachTip": false,
+          "enabled": false,
+          "invert": false,
+          "mode": "multiply",
+          "pattern": {
+            "procedural": {
+              "seed": 1,
+              "size": 128,
+              "style": "paper"
+            }
+          },
+          "scale": 1.0
+        },
+        "tip": "round",
+        "transfer": {
+          "enabled": false,
+          "flow": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "mix": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "opacity": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          },
+          "wetness": {
+            "control": "off",
+            "curve": [
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                1.0
+              ]
+            ],
+            "fadeSteps": 25,
+            "jitter": 0.0,
+            "minimum": 0.0
+          }
+        },
+        "wetEdges": false
       }
     },
-    "owner": "Brush"
+    "owner": "Eraser"
   },
   "toolOptions": {
     "crop_custom_ratio_height": 1.0,
     "crop_custom_ratio_width": 1.0,
     "crop_ratio": "1:1",
-    "eyedropper_size": 11,
+    "eyedropper_size": 5,
     "gradient_style": "reflected",
-    "remove_new_layer": true
+    "remove_new_layer": true,
+    "sample_all": {
+      "blur": false,
+      "content_aware_move": false,
+      "magic_eraser": false,
+      "magic_wand": false,
+      "object_selection": false,
+      "paint_bucket": false,
+      "patch": false,
+      "quick_selection": false,
+      "remove": false,
+      "sharpen": false,
+      "smudge": false,
+      "spot_healing": true
+    }
   },
   "toolbar": {
     "hidden": [],

@@ -8,8 +8,25 @@
           "file.scripts.browse",
           { "path": "/home/lewelove/.config/photocraft/Scripts/green-channel-to-layer.json" }
         ]
-      ],
-      "color": "green"
+      ]
+    },
+    {
+      "name": "Blue Channel to Layer",
+      "steps": [
+        [
+          "file.scripts.browse",
+          { "path": "/home/lewelove/.config/photocraft/Scripts/blue-channel-to-layer.json" }
+        ]
+      ]
+    },
+    {
+      "name": "Red Channel to Layer",
+      "steps": [
+        [
+          "file.scripts.browse",
+          { "path": "/home/lewelove/.config/photocraft/Scripts/red-channel-to-layer.json" }
+        ]
+      ]
     }
   ]
 }
