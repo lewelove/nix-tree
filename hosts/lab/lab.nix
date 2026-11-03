@@ -22,15 +22,15 @@
       secrets
 
       openssh
-      duckdns
-      caddy
-      authelia
-      fail2ban
+      # duckdns
+      # caddy
+      # authelia
+      # fail2ban
       v2raya
-      xray-inbound
-      starve-docs
+      # xray-inbound
+      # starve-docs
 
-      podman
+      # podman
 
       nfs
       qbittorrent
