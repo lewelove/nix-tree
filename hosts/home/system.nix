@@ -57,7 +57,14 @@
     powerManagement.finegrained = false;
     open = false;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version = "580.178.04";
+      sha256_64bit = "sha256-WXWobuRb/8tib1GuM9EWmxCBhqLqR61lHnLxP6S21vk=";
+      sha256_aarch64 = "sha256-71nsXSSFDhLW91UOwffPhNtTqEzpxj6zulXvXtDE8Ek=";
+      openSha256 = "sha256-7eXEROG2rQK9+Ag26nG4jFPrnKeveVUQ0ugIAshJZPQ=";
+      settingsSha256 = "sha256-KcrGHoR+ZMdsFyI4myU8/eVls2f8GkNSX/j2JnZndyM=";
+      persistencedSha256 = "sha256-3Omj160wtWdKAZDzWt/m/cbUTQ9DMJ1rSxMrnIrKXiw=";
+    };
   };
 
   virtualisation.containers.enable = true;
