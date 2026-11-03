@@ -13,6 +13,8 @@
       hyprpicker
     ];
 
+    environment.sessionVariables.HYPRLAND_NO_SD_TARGET = "1";
+
     security.polkit.enable = true;
 
     xdg.portal = {
