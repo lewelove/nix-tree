@@ -40,10 +40,11 @@ local meta_workspaces = {
   },
 }
 
+local by_name = {}
+
 for _, meta in pairs(meta_workspaces) do
-  if not meta.name then
-    meta.name = meta.key
-  end
+  meta.name = meta.name or meta.key
+  by_name[meta.name] = meta
 end
 
 local function switch_workspace(meta)
@@ -71,10 +72,9 @@ local function move_to_workspace(meta)
 end
 
 for _, meta in pairs(meta_workspaces) do
-  if meta.on_created_empty or meta.layout then
+  if meta.layout then
     hl.workspace_rule({
       workspace = "name:" .. meta.name,
-      on_created_empty = meta.on_created_empty,
       layout = meta.layout,
     })
   end
@@ -87,3 +87,12 @@ for _, meta in pairs(meta_workspaces) do
     move_to_workspace(meta)
   end)
 end
+
+hl.on("workspace.created", function(ws)
+  if not ws.is_empty then return end
+
+  local meta = by_name[ws.addressable_name]
+  if not (meta and meta.on_created_empty) then return end
+
+  hl.exec_cmd(meta.on_created_empty, { workspace = "name:" .. ws.addressable_name })
+end)

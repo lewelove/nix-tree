@@ -1,10 +1,5 @@
 --- System -----------------------------------------------------
 
--- kill hyprland and escape to tty
--- hl.bind (
---   "CONTROL + ALT + Escape",
---   hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'") )
-
 -- powermenu
 hl.bind (
   "CONTROL + ALT + Delete",
@@ -60,15 +55,6 @@ hl.bind (
   "SUPER + mouse:273",
   hl.dsp.window.resize(),
   { mouse = true } )
-
--- -- swap windows within workspace
--- hl.bind (
---   "SUPER + SHIFT + Left",
---   hl.dsp.window.swap({ direction = "l" }) )
---
--- hl.bind (
---   "SUPER + SHIFT + Right",
---   hl.dsp.window.swap({ direction = "r", group_aware = true }) )
 
 -- swap columns within scrolling workspace
 hl.bind (

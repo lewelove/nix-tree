@@ -1,29 +1,28 @@
 -- Focus viewport on the window under a held LMB
 
--- local TICK_MS = 300
 local TICK_MS = 1000
 local SCROLLING_LAYOUT = "scrolling"
 
 local function active_workspaces()
-  local ids = {}
+  local names = {}
 
   for _, monitor in ipairs(hl.get_monitors()) do
     for _, workspace in ipairs({ monitor.active_workspace, monitor.active_special_workspace }) do
       if workspace then
-        ids[workspace.id] = true
+        names[workspace.addressable_name] = true
       end
     end
   end
 
-  return ids
+  return names
 end
 
-local function visible(window, ids)
+local function visible(window, names)
   if window.pinned then
     return true
   end
 
-  return window.workspace ~= nil and ids[window.workspace.id] == true
+  return window.workspace ~= nil and names[window.workspace.addressable_name] == true
 end
 
 local function contains(window, pos)

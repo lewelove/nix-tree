@@ -1,29 +1,20 @@
--- Layouts
+-- Layouts & Decor
 
 hl.config ({
   general = {
-    layout = "scrolling"
-  },
-  scrolling = {
-    -- fullscreen_on_one_column = true,
-    fullscreen_on_one_column = false,
-    column_width = 0.7,
-    focus_fit_method = 0,
-    -- follow_min_visible = 0.0,
-    follow_focus = 1,
-  }
-})
-
--- Decor
-
-hl.config ({
-  general = {
+    layout = "scrolling",
     gaps_in = 0,
     gaps_out = { top = 12, bottom = 8, left = 12, right = 12 },
-    -- gaps_out = 8,
     border_size = 0,
     resize_on_border = false,
     allow_tearing = false,
+  },
+
+  scrolling = {
+    fullscreen_on_one_column = false,
+    column_width = 0.7,
+    focus_fit_method = 0,
+    follow_focus = 1,
   },
 
   decoration = {
@@ -102,14 +93,12 @@ hl.animation ({
 hl.animation ({
   leaf = "fade",
   enabled = true,
-  -- enabled = false,
   speed = 0.5,
   bezier = "almost_linear",
 })
 
 hl.animation ({
   leaf = "layers",
-  -- enabled = true,
   enabled = false,
   speed = 1,
   bezier = "ease_out_quint",
@@ -130,19 +119,3 @@ hl.animation ({
   bezier = "steep",
   style = "fade",
 })
-
--- hl.animation ({
---   leaf = "fadeLayersIn",
---   -- enabled = true,
---   enabled = false,
---   speed = 0.2,
---   bezier = "steep",
--- })
---
--- hl.animation ({
---   leaf = "fadeLayersOut",
---   -- enabled = true,
---   enabled = false,
---   speed = 0.2,
---   bezier = "steep",
--- })
