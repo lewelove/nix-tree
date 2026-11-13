@@ -1,18 +1,14 @@
 datamile.library("foobar", { label = "Foobar2000",
-  groupers = {
-    "year_added_foobar",
-  },
-  orders = {
-    "date_added_foobar",
-  },
+  groupers = { "year_added_foobar" },
+  orders = { "date_added_foobar" },
   match = function(a)
-    return d.get(a, "keys.date_added_foobar") ~= nil
+    return d.get(a, "tags.date_added_foobar") ~= nil
   end,
 })
 
 datamile.grouper("year_added_foobar", { label = "Year Added",
   select = function(a)
-    local date = d.get(a, "keys.date_added_foobar")
+    local date = d.get(a, "tags.date_added_foobar")
     if date and #date >= 4 then return date:sub(1, 4) end
   end,
 })
@@ -20,6 +16,6 @@ datamile.grouper("year_added_foobar", { label = "Year Added",
 datamile.order("date_added_foobar", { label = "Date Added",
   reverse = true,
   sort = function(a)
-    return d.get(a, "keys.date_added_foobar") or ""
+    return d.get(a, "tags.date_added_foobar") or ""
   end,
 })

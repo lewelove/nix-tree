@@ -7,46 +7,38 @@ local chroma_order = {
 }
 
 datamile.grouper("genre", { label = "Genre",
-  select = function(a) return d.get(a, "keys.genre") or "Unknown" end,
+  select = function(a) return d.get(a, "tags.genre") or "Unknown" end,
   format = function(g)
     return {
       label = g.value,
       sublabel = format_duration_clock(g.duration_millis),
-      -- sort = -g.duration_millis or 0,
     }
   end
 })
 
 datamile.grouper("styles", { label = "Styles",
-  select = function(a) return d.get(a, "keys.styles") or "Unknown" end,
+  select = function(a) return d.get(a, "tags.styles") or "Unknown" end,
   format = function(g)
     return {
       label = g.value,
       sublabel = format_duration_clock(g.duration_millis),
-      -- sort = -g.duration_millis or 0,
     }
   end
 })
 
 datamile.grouper("year", { label = "Decades & Years",
   select = function(a)
-    local date = d.get(a, "date")
+    local date = d.get(a, "tags.date")
     if date and #date >= 4 then return date:sub(1, 4) end
     return "Unknown"
   end,
   format = function(g)
     if g.value == "Unknown" then
-      return {
-        label = "Unknown",
-        sort = 0,
-      }
+      return { label = "Unknown", sort = 0 }
     end
 
     if g.value:match("^%d+0s$") then
-      return {
-        label = g.value,
-        sort = tonumber(g.value:sub(1, 4)) or 0,
-      }
+      return { label = g.value, sort = tonumber(g.value:sub(1, 4)) or 0 }
     end
 
     local year_num = tonumber(g.value)
@@ -60,42 +52,31 @@ datamile.grouper("year", { label = "Decades & Years",
       }
     end
 
-    return {
-      label = g.value,
-      sort = g.value,
-    }
+    return { label = g.value, sort = g.value }
   end,
 })
 
 datamile.grouper("total_tracks", { label = "Total Tracks",
   select = function(a)
-    local tracks = d.get(a, "info.total_tracks") or 0
-    return tostring(tracks)
+    return tostring(d.get(a, "objects.info.total_tracks") or 0)
   end,
   format = function(g)
-    return {
-      label = g.value,
-      sort = tonumber(g.value) or 0,
-    }
+    return { label = g.value, sort = tonumber(g.value) or 0 }
   end,
 })
 
 datamile.grouper("total_discs", { label = "Total Discs",
   select = function(a)
-    local discs = d.get(a, "info.total_discs") or 1
-    return tostring(discs)
+    return tostring(d.get(a, "objects.info.total_discs") or 1)
   end,
   format = function(g)
-    return {
-      label = g.value,
-      sort = tonumber(g.value) or 1,
-    }
+    return { label = g.value, sort = tonumber(g.value) or 1 }
   end,
 })
 
 datamile.grouper("year_added", { label = "Year Added",
   select = function(a)
-    local date = d.get(a, "keys.date_added")
+    local date = d.get(a, "tags.date_added")
     if date and #date >= 4 then return date:sub(1, 4) end
     return "Unknown"
   end,
@@ -104,8 +85,7 @@ datamile.grouper("year_added", { label = "Year Added",
 datamile.grouper("chroma", { label = "Chroma",
   reverse = true,
   select = function(a)
-    local raw = d.get(a, "keys.cover_chroma")
-    local val = tonumber(raw) or 0
+    local val = tonumber(d.get(a, "tags.cover_chroma")) or 0
     if val < 0.17 then return "Monochrome"
     elseif val < 21 then return "Bleak"
     elseif val < 45 then return "Standard"
@@ -113,42 +93,57 @@ datamile.grouper("chroma", { label = "Chroma",
     else return "Saturated" end
   end,
   format = function(g)
-    return {
-      label = g.value,
-      sort = chroma_order[g.value] or 0,
-    }
+    return { label = g.value, sort = chroma_order[g.value] or 0 }
   end,
 })
 
 datamile.grouper("folder", { label = "Folders",
   select = function(a)
-    local rel_path = d.get(a, "keys.path")
+    local rel_path = d.get(a, "tags.path")
     if not rel_path or rel_path == "" then return "Unknown" end
     return rel_path
   end,
   format = function(g)
     if g.value == "Unknown" then
-      return {
-        label = "Unknown",
-        sort = "zzz",
-      }
+      return { label = "Unknown", sort = "zzz" }
     end
 
-    -- Split "A/B/C" into parent: "A/B", label: "C"
     local parent, folder_name = g.value:match("^(.-)/([^/]+)$")
-
     if parent and folder_name then
       return {
         label = folder_name,
         parent = parent,
         sort = folder_name:lower(),
       }
-    else
-      -- Root level directory (no '/' remaining)
+    end
+
+    return { label = g.value, sort = g.value:lower() }
+  end,
+})
+
+datamile.grouper("artist_tree", { label = "Artist Tree",
+  select = function(a)
+    local albumartists = d.get(a, "tags.albumartists")
+    local albumartist = d.get(a, "tags.albumartist")
+    return d.fn.coalesce(albumartists, albumartist, "Unknown")
+  end,
+  format = function(g)
+    if #g.value == 1 or g.value == "#" then
       return {
         label = g.value,
-        sort = g.value:lower(),
+        sort = g.value == "#" and "zzz" or g.value:lower(),
       }
     end
+
+    local clean = clean_artist(g.value)
+    local first = clean:sub(1, 1):upper()
+    local bucket = first:match("%a") and first or "#"
+
+    return {
+      label = g.value,
+      sublabel = format_duration(g.duration_millis),
+      parent = bucket,
+      sort = clean:lower(),
+    }
   end,
 })

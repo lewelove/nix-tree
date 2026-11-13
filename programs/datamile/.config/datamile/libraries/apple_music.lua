@@ -1,23 +1,14 @@
 datamile.library("apple_music", { label = "Apple Music",
-  groupers = {
-    "year_added_applemusic",
-    "genre",
-    "decade",
-  },
-  orders = {
-    "date_added_applemusic",
-    "default",
-    "az",
-    "year",
-  },
+  groupers = { "year_added_applemusic", "genre", "decade" },
+  orders = { "date_added_applemusic", "default", "az", "year" },
   match = function(a)
-    return d.get(a, "keys.date_added_applemusic") ~= nil
+    return d.get(a, "tags.date_added_applemusic") ~= nil
   end,
 })
 
 datamile.grouper("year_added_applemusic", { label = "Year Added",
   select = function(a)
-    local date = d.get(a, "keys.date_added_applemusic")
+    local date = d.get(a, "tags.date_added_applemusic")
     if date and #date >= 4 then return date:sub(1, 4) end
   end,
 })
@@ -25,6 +16,6 @@ datamile.grouper("year_added_applemusic", { label = "Year Added",
 datamile.order("date_added_applemusic", { label = "Date Added",
   reverse = true,
   sort = function(a)
-    return d.get(a, "keys.date_added_applemusic") or ""
+    return d.get(a, "tags.date_added_applemusic") or ""
   end,
 })

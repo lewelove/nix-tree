@@ -1,18 +1,13 @@
 datamile.library("my_year", { label = "My Year",
-  groupers = {
-    "my_year_grouper",
-  },
-  orders = {
-    "default",
-    "date_added",
-  },
+  groupers = { "my_year_grouper" },
+  orders = { "default", "date_added" },
   match = function(a)
-    return d.get(a, "keys.my_year") ~= nil
+    return d.get(a, "tags.my_year") ~= nil
   end,
 })
 
 datamile.grouper("my_year_grouper", { label = "Year",
   select = function(a)
-    return d.get(a, "keys.my_year")
+    return d.get(a, "tags.my_year")
   end,
 })

@@ -1,5 +1,22 @@
 local album = d.media.type("album")
 
+album.lock(function(target)
+  return d.fs.joinpath(target.path, "album.lock.json")
+end)
+
+album.select(function(scope)
+  return d.fs.roots(scope, { marker = "album.toml", prune = false })
+end)
+
+album.input("manifest", function(ctx)
+  return d.fs.read_toml(d.fs.joinpath(ctx.path, "album.toml"))
+end)
+
+album.input("virtual", function(ctx)
+  local virtual = d.fs.read_toml(d.fs.joinpath(ctx.path, "virtual.toml"))
+  return d.get(virtual, "album.virtual") == true
+end)
+
 album.input("history", function(ctx)
   return d.fs.read_toml(d.fs.joinpath(ctx.path, "history.toml"))
 end)
@@ -15,12 +32,6 @@ end)
 album.input("cover_metrics", function(ctx)
   return d.fs.read_json(d.fs.joinpath(ctx.path, "Info/cover_metrics.json"))
 end)
-
-local function count(tbl)
-  local n = 0
-  for _ in pairs(tbl) do n = n + 1 end
-  return n
-end
 
 -- All lyric files for the album, read once per album.
 local function list_lyrics(album_path)
@@ -94,7 +105,7 @@ album.child("tracks", "track", function(ctx)
     discs[tostring(d.get(seed.audio, "tags.discnumber") or 1)] = true
   end
 
-  local total_discs = math.max(count(discs), 1)
+  local total_discs = math.max(d.tbl.count(discs), 1)
   local lyrics = list_lyrics(ctx.path)
   local mb = index_mb(ctx.mb_release)
 
@@ -106,6 +117,38 @@ album.child("tracks", "track", function(ctx)
   end
 
   return seeds
+end)
+
+album.id(function(ctx)
+  local media = d.get(REGISTRY.config, "storage.media_directory")
+  if not media or media == "" then
+    return nil
+  end
+
+  return d.fs.relpath(media, ctx.path)
+end)
+
+album.location(function(ctx)
+  local stat = d.fs.stat(ctx.path)
+  if not stat then
+    return nil
+  end
+
+  return { kind = "directory", path = ctx.path, mtime = stat.mtime }
+end)
+
+album.tag("albumartist", function(ctx)
+  return d.get(ctx, "manifest.album.albumartist")
+    or d.get(ctx, "manifest.album.artist")
+end)
+
+album.tag("album", function(ctx)
+  return d.get(ctx, "manifest.album.album")
+end)
+
+album.tag("date", function(ctx)
+  return d.get(ctx, "manifest.album.date")
+    or d.get(ctx, "manifest.album.release_date")
 end)
 
 album.tag("albumartists", function(ctx)
@@ -176,7 +219,7 @@ album.tag("cover_entropy", function(ctx)
 end)
 
 album.tag("path", function(ctx)
-  return d.fs.relpath(REGISTRY.config.storage.music_directory, ctx.path)
+  return d.fs.relpath(REGISTRY.config.storage.media_directory, ctx.path)
 end)
 
 album.tag("musicbrainz_albumid", function(ctx)
@@ -258,6 +301,92 @@ album.tag("date_added", function(ctx)
   end
 
   return earliest
+end)
+
+album.object("info", function(ctx)
+  local tracks = ctx.tracks or {}
+  local discs = {}
+
+  for _, item in ipairs(tracks) do
+    discs[tostring(d.get(item, "tags.discnumber") or 1)] = true
+  end
+
+  local duration = d.list.sum(tracks, function(item)
+    return d.get(item, "objects.info.duration_milliseconds") or 0
+  end)
+
+  return {
+    virtual = ctx.virtual,
+    total_tracks = #tracks,
+    total_discs = math.max(d.tbl.count(discs), 1),
+    duration_milliseconds = duration,
+    duration_formatted = d.fmt.clock(duration),
+  }
+end)
+
+local function is_hex_color(value)
+  if type(value) ~= "string" then
+    return false
+  end
+
+  local digits = value:match("^#(%x+)$")
+  return digits ~= nil and ({ 3, 4, 6, 8 })[#digits] == true
+end
+
+local function color_list(value)
+  if type(value) == "string" then
+    value = { value }
+  end
+  if type(value) ~= "table" then
+    return nil
+  end
+
+  local colors = {}
+  for _, item in ipairs(value) do
+    if is_hex_color(item) then
+      table.insert(colors, item)
+    end
+  end
+
+  return #colors > 0 and colors or nil
+end
+
+album.object("colors", function(ctx)
+  local theme = d.fs.read_toml(d.fs.joinpath(ctx.path, "theme.toml"))
+  local raw = d.get(theme, "album.colors")
+  if type(raw) ~= "table" then
+    return nil
+  end
+
+  local colors = { background = color_list(raw.background) }
+  if is_hex_color(raw.foreground) then
+    colors.foreground = raw.foreground
+  end
+  if not colors.background and not colors.foreground then
+    return nil
+  end
+
+  return colors
+end)
+
+album.image("main", function(ctx)
+  local cover = d.fs.first(ctx.path, {
+    "cover.png",
+    "cover.jpg",
+    "cover.jpeg",
+    "folder.png",
+    "folder.jpg",
+    "folder.jpeg",
+  })
+  if not cover then
+    return nil
+  end
+
+  return {
+    fit = { "crop", 1080, 1080 },
+    filter = "catmullrom",
+    sources = d.fs.basename(cover),
+  }
 end)
 
 album.object("manifests", function(ctx)

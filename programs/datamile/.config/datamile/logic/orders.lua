@@ -1,42 +1,39 @@
 datamile.order("default", { label = "Default",
   sort = function(a)
-    local custom = d.get(a, "keys.custom_albumartist")
-    local albumartist = d.get(a, "albumartist")
+    local custom = d.get(a, "tags.custom_albumartist")
+    local albumartist = d.get(a, "tags.albumartist")
     local raw = custom or albumartist or ""
     local cleaned = clean_artist(raw)
 
-    local date = d.get(a, "date") or ""
-    local album = d.get(a, "album") or ""
+    local date = d.get(a, "tags.date") or ""
+    local album = d.get(a, "tags.album") or ""
     return { cleaned:lower(), date, album:lower() }
   end,
 })
 
 datamile.order("az", { label = "Alphabetical",
   sort = function(a)
-    local album = d.get(a, "album") or ""
-    return album:lower()
+    return (d.get(a, "tags.album") or ""):lower()
   end,
 })
 
 datamile.order("year", { label = "Year",
   reverse = true,
   sort = function(a)
-    local date = d.get(a, "date")
+    local date = d.get(a, "tags.date")
     local id = d.get(a, "id")
     return { date, id }
   end,
 })
 
 datamile.order("duration", { label = "Duration",
-  -- reverse = true,
   sort = function(a)
-    local val = d.get(a, "info.duration_milliseconds")
-    return tonumber(val) or 0
+    return tonumber(d.get(a, "objects.info.duration_milliseconds")) or 0
   end,
 })
 
 datamile.order("cover_hash", { label = "Cover Hash",
-  sort = function(a) return d.get(a, "covers.main.file.address") or "" end,
+  sort = function(a) return d.get(a, "images.main.1.address") or "" end,
 })
 
 datamile.order("random", { label = "Random",
@@ -46,22 +43,20 @@ datamile.order("random", { label = "Random",
 datamile.order("chroma", { label = "Chroma",
   reverse = true,
   sort = function(a)
-    local val = d.get(a, "keys.cover_chroma")
-    return tonumber(val) or 0
+    return tonumber(d.get(a, "tags.cover_chroma")) or 0
   end,
 })
 
 datamile.order("entropy", { label = "Entropy",
   reverse = true,
   sort = function(a)
-    local val = d.get(a, "keys.cover_entropy")
-    return tonumber(val) or 0
+    return tonumber(d.get(a, "tags.cover_entropy")) or 0
   end,
 })
 
 datamile.order("date_added", { label = "Date Added",
   reverse = true,
-  sort = function(a) return d.get(a, "keys.date_added") or "" end,
+  sort = function(a) return d.get(a, "tags.date_added") or "" end,
 })
 
 datamile.order("last_edited", { label = "Last Edited",
@@ -69,11 +64,10 @@ datamile.order("last_edited", { label = "Last Edited",
   sort = function(a)
     local max_mtime = 0
 
-    local manifests = d.get(a, "manifests")
+    local manifests = d.get(a, "objects.manifests")
     if type(manifests) == "table" then
       for _, m in pairs(manifests) do
-        local raw = d.get(m, "file.mtime")
-        local mtime = tonumber(raw) or 0
+        local mtime = tonumber(d.get(m, "file.mtime")) or 0
         if mtime > max_mtime then max_mtime = mtime end
       end
     end
@@ -81,8 +75,7 @@ datamile.order("last_edited", { label = "Last Edited",
     local tracks = d.get(a, "tracks")
     if type(tracks) == "table" then
       for _, t in ipairs(tracks) do
-        local raw = d.get(t, "file.mtime")
-        local mtime = tonumber(raw) or 0
+        local mtime = tonumber(d.get(t, "location.mtime")) or 0
         if mtime > max_mtime then max_mtime = mtime end
       end
     end

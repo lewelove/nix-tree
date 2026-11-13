@@ -156,7 +156,7 @@ datamile.action("embed", {
   run = function(ctx)
     for _, entry in ipairs(ctx.albums) do
       local album = entry.lock.album
-      local tracks = entry.lock.tracks
+      local tracks = album.tracks or {}
 
       local args = {
         rust_bin("embed"),
@@ -164,41 +164,41 @@ datamile.action("embed", {
         "--delete-other-covers",
       }
 
-      local cover_path = d.get(album, "covers.main.file.path")
+      local cover_path = d.get(album, "images.main.1.source.file.path")
       if cover_path then
         add_arg(args, "--cover", d.fs.joinpath(entry.path, cover_path))
       end
 
-      local multi_disc = album.info.total_discs > 1
+      local multi_disc = d.get(album, "objects.info.total_discs") > 1
 
       for _, track in ipairs(tracks) do
-        add_arg(args, "--track", d.fs.joinpath(entry.path, track.file.path))
-        add_arg(args, "--album", album.album)
-        add_arg(args, "--albumartist", album.albumartist)
-        add_arg(args, "--date", album.date)
-        add_arg(args, "--genre", d.get(album, "keys.genre"))
-        add_arg(args, "--comment", d.get(album, "keys.comment"))
-        add_arg(args, "--musicbrainz-albumid", d.get(album, "keys.musicbrainz_albumid"))
-        add_arg(args, "--musicbrainz-releasegroupid", d.get(album, "keys.musicbrainz_releasegroupid"))
-        add_arg(args, "--musicbrainz-albumartistid", d.get(album, "keys.musicbrainz_albumartistid"))
-        add_arg(args, "--releasetype", d.get(album, "keys.musicbrainz_releasetype"))
-        add_arg(args, "--releasecountry", d.get(album, "keys.releasecountry") or d.get(album, "keys.country"))
-        add_arg(args, "--barcode", d.get(album, "keys.barcode"))
-        add_arg(args, "--publisher", d.get(album, "keys.label"))
-        add_arg(args, "--catalognumber", d.get(album, "keys.catalognumber"))
-        add_arg(args, "--title", track.title)
-        add_arg(args, "--artist", track.artist)
-        add_arg(args, "--tracknumber", track.tracknumber)
+        add_arg(args, "--track", d.get(track, "location.path"))
+        add_arg(args, "--album", d.get(album, "tags.album"))
+        add_arg(args, "--albumartist", d.get(album, "tags.albumartist"))
+        add_arg(args, "--date", d.get(album, "tags.date"))
+        add_arg(args, "--genre", d.get(album, "tags.genre"))
+        add_arg(args, "--comment", d.get(album, "tags.comment"))
+        add_arg(args, "--musicbrainz-albumid", d.get(album, "tags.musicbrainz_albumid"))
+        add_arg(args, "--musicbrainz-releasegroupid", d.get(album, "tags.musicbrainz_releasegroupid"))
+        add_arg(args, "--musicbrainz-albumartistid", d.get(album, "tags.musicbrainz_albumartistid"))
+        add_arg(args, "--releasetype", d.get(album, "tags.musicbrainz_releasetype"))
+        add_arg(args, "--releasecountry", d.get(album, "tags.releasecountry") or d.get(album, "tags.country"))
+        add_arg(args, "--barcode", d.get(album, "tags.barcode"))
+        add_arg(args, "--publisher", d.get(album, "tags.label"))
+        add_arg(args, "--catalognumber", d.get(album, "tags.catalognumber"))
+        add_arg(args, "--title", d.get(track, "tags.title"))
+        add_arg(args, "--artist", d.get(track, "tags.artist"))
+        add_arg(args, "--tracknumber", d.get(track, "tags.tracknumber"))
 
         if multi_disc then
-          add_arg(args, "--discnumber", track.discnumber)
+          add_arg(args, "--discnumber", d.get(track, "tags.discnumber"))
         end
 
-        add_arg(args, "--musicbrainz-releasetrackid", d.get(track, "keys.musicbrainz_releasetrackid"))
-        add_arg(args, "--musicbrainz-trackid", d.get(track, "keys.musicbrainz_trackid") or d.get(track, "keys.musicbrainz_recordingid"))
-        add_arg(args, "--musicbrainz-artistid", d.get(track, "keys.musicbrainz_artistid"))
-        add_arg(args, "--replaygain-track-gain", d.get(track, "keys.replaygain_track_gain"))
-        add_arg(args, "--lyrics", d.get(track, "lyrics.text") or d.get(track, "keys.lyrics"))
+        add_arg(args, "--musicbrainz-releasetrackid", d.get(track, "tags.musicbrainz_releasetrackid"))
+        add_arg(args, "--musicbrainz-trackid", d.get(track, "tags.musicbrainz_trackid") or d.get(track, "tags.musicbrainz_recordingid"))
+        add_arg(args, "--musicbrainz-artistid", d.get(track, "tags.musicbrainz_artistid"))
+        add_arg(args, "--replaygain-track-gain", d.get(track, "tags.replaygain_track_gain"))
+        add_arg(args, "--lyrics", d.get(track, "objects.lyrics.text"))
       end
 
       d.system(args, { stdio = "inherit" })
@@ -241,8 +241,8 @@ datamile.action("search_cover", {
   description = "Search high-res artwork on MusicHoarders",
   run = function(ctx)
     for _, entry in ipairs(ctx.albums) do
-      local artist = d.get(entry, "lock.album.albumartist") or d.get(entry, "lock.album.artist")
-      local album = d.get(entry, "lock.album.album")
+      local artist = d.get(entry, "lock.album.tags.albumartist") or d.get(entry, "lock.album.tags.artist")
+      local album = d.get(entry, "lock.album.tags.album")
       local args = { py_bin("search_cover") }
       if artist and album then
         add_arg(args, "--artist", artist)
@@ -304,8 +304,8 @@ datamile.action("mbs", {
 
     if #ctx.albums > 0 then
       for _, entry in ipairs(ctx.albums) do
-        local artist = d.get(entry, "lock.album.albumartist") or d.get(entry, "lock.album.artist") or ""
-        local title = d.get(entry, "lock.album.album") or ""
+        local artist = d.get(entry, "lock.album.tags.albumartist") or d.get(entry, "lock.album.tags.artist") or ""
+        local title = d.get(entry, "lock.album.tags.album") or ""
         if artist ~= "" or title ~= "" then
           search_mb(artist, title)
         end
@@ -328,8 +328,8 @@ datamile.action("css", {
     local target = ctx.albums and ctx.albums[1]
     if not target then return end
 
-    local artist = d.get(target, "lock.album.albumartist") or d.get(target, "lock.album.artist") or ""
-    local title = d.get(target, "lock.album.album") or ""
+    local artist = d.get(target, "lock.album.tags.albumartist") or d.get(target, "lock.album.tags.artist") or ""
+    local title = d.get(target, "lock.album.tags.album") or ""
 
     if artist ~= "" and title ~= "" then
       local query = string.format("%s - %s", artist, title)
@@ -372,8 +372,8 @@ datamile.action("rts", {
 
     if #ctx.albums > 0 then
       for _, entry in ipairs(ctx.albums) do
-        local artist = d.get(entry, "lock.album.albumartist") or d.get(entry, "lock.album.artist") or ""
-        local title = d.get(entry, "lock.album.album") or ""
+        local artist = d.get(entry, "lock.album.tags.albumartist") or d.get(entry, "lock.album.tags.artist") or ""
+        local title = d.get(entry, "lock.album.tags.album") or ""
         local query = (artist ~= "" and title ~= "") and (artist .. " " .. title) or (artist .. title)
         open_tracker(d.str.trim(query))
       end
