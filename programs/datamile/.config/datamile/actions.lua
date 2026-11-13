@@ -286,15 +286,7 @@ datamile.action("mbs", {
         query = string.format('artist:"%s" AND releasegroup:"%s"', artist, title)
       end
 
-      local encoded = ""
-      for c in query:gmatch(".") do
-        if c:match("[%w_.~-]") then
-          encoded = encoded .. c
-        else
-          encoded = encoded .. string.format("%%%02X", string.byte(c))
-        end
-      end
-
+      local encoded = d.str.url_encode(query)
       local url = string.format(
         "https://musicbrainz.org/search?type=release_group&method=advanced&query=%s",
         encoded
@@ -358,16 +350,8 @@ datamile.action("rts", {
     local function open_tracker(query)
       if query == "" then return end
 
-      local enc = d.system({
-        "python3",
-        "-c",
-        "import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]), end='')",
-        query,
-      })
-      if not enc.ok then return end
-
-      local url = "https://rutracker.org/forum/tracker.php?nm=" .. enc.stdout
-      d.system({ "xdg-open", url }, { detach = true })
+      local url = "https://rutracker.org/forum/tracker.php?nm=" .. d.str.url_encode(query)
+      d.system.open(url)
     end
 
     if #ctx.albums > 0 then

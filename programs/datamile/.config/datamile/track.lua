@@ -10,18 +10,6 @@ local function audio_extensions()
   return d.fs.audio_extensions()
 end
 
-local function leading_int(value)
-  if type(value) == "number" then
-    return math.floor(value)
-  end
-  if type(value) ~= "string" then
-    return nil
-  end
-
-  local digits = value:match("^%s*(%d+)")
-  return digits and tonumber(digits) or nil
-end
-
 local function harvest(path)
   local seeds = {}
   for _, file in ipairs(d.fs.files(path, { ext = audio_extensions() })) do
@@ -30,8 +18,8 @@ local function harvest(path)
 
   return d.list.sort_by(seeds, function(item)
     return {
-      leading_int(d.get(item.audio, "tags.discnumber")) or 1,
-      leading_int(d.get(item.audio, "tags.tracknumber")) or math.huge,
+      d.str.leading_int(d.get(item.audio, "tags.discnumber")) or 1,
+      d.str.leading_int(d.get(item.audio, "tags.tracknumber")) or math.huge,
       item.path,
     }
   end)
@@ -131,33 +119,33 @@ track.object("info", function(ctx)
   }
 end)
 
-d.compile.track.tag("ctdbid", function(ctx)
+track.tag("ctdbid", function(ctx)
   return from(ctx, "ctdbid")
 end)
 
-d.compile.track.tag("instrumental", function(ctx)
+track.tag("instrumental", function(ctx)
   return from(ctx, "instrumental")
 end)
 
-d.compile.track.tag("replaygain_track_gain", function(ctx)
+track.tag("replaygain_track_gain", function(ctx)
   return from(ctx, "replaygain_track_gain")
 end)
 
-d.compile.track.tag("musicbrainz_releasetrackid", function(ctx)
+track.tag("musicbrainz_releasetrackid", function(ctx)
   return d.get(ctx, "manifest.musicbrainz_releasetrackid") or d.get(ctx, "mb_track.id")
 end)
 
-d.compile.track.tag("musicbrainz_recordingid", function(ctx)
+track.tag("musicbrainz_recordingid", function(ctx)
   return d.get(ctx, "manifest.musicbrainz_recordingid")
     or d.get(ctx, "mb_track.recording.id")
 end)
 
-d.compile.track.tag("musicbrainz_artistid", function(ctx)
+track.tag("musicbrainz_artistid", function(ctx)
   return d.get(ctx, "manifest.musicbrainz_artistid")
     or d.get(ctx, "mb_track.artist-credit.1.artist.id")
 end)
 
-d.compile.track.object("embedded", function(ctx)
+track.object("embedded", function(ctx)
   if ctx.path == nil then
     return ctx.manifest
   end
@@ -165,14 +153,14 @@ d.compile.track.object("embedded", function(ctx)
   return ctx.audio and ctx.audio.tags
 end)
 
-d.compile.track.object("lyrics", function(ctx)
+track.object("lyrics", function(ctx)
   local path = ctx.lyrics_path
   if not path then
     return nil
   end
 
   return {
-    type = (path:match("%.([^.]+)$") or "txt"):lower(),
+    type = d.fs.ext(path) or "txt",
     text = d.fs.read(path),
   }
 end)

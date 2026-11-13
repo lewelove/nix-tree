@@ -38,14 +38,7 @@ local function list_lyrics(album_path)
   local files = {}
   for _, dirname in ipairs({ "Lyrics", "lyrics" }) do
     local dir = d.fs.joinpath(album_path, dirname)
-    if d.fs.exists(dir) then
-      for rel, kind in d.fs.dir(dir, { depth = 1 }) do
-        local ext = rel:match("%.([^.]+)$")
-        if kind == "file" and (ext == "lrc" or ext == "txt") then
-          table.insert(files, d.fs.joinpath(dir, rel))
-        end
-      end
-    end
+    d.list.extend(files, d.fs.files(dir, { depth = 1, ext = { "lrc", "txt" } }))
   end
   return files
 end
@@ -330,7 +323,12 @@ local function is_hex_color(value)
   end
 
   local digits = value:match("^#(%x+)$")
-  return digits ~= nil and ({ 3, 4, 6, 8 })[#digits] == true
+  if not digits then
+    return false
+  end
+
+  local len = #digits
+  return len == 3 or len == 4 or len == 6 or len == 8
 end
 
 local function color_list(value)
@@ -394,8 +392,8 @@ album.object("manifests", function(ctx)
 
   for _, name in ipairs({ "album", "history", "id", "local", "theme", "virtual" }) do
     local file = d.fs.joinpath(ctx.path, name .. ".toml")
-    if d.fs.exists(file) then
-      local stat = d.fs.stat(file)
+    local stat = d.fs.stat(file)
+    if stat then
       result[name] = {
         file = {
           path = d.fs.relpath(ctx.path, file),

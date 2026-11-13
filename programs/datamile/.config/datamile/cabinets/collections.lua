@@ -48,7 +48,7 @@ datamile.shelf("ambient50", { label = "Ambient 50",
 
 datamile.shelf("signalwave", { label = "Signalwave",
   match = function(a)
-    return contains(d.get(a, "tags.genre"), "Signalwave")
+    return d.fn.has(d.get(a, "tags.genre"), "Signalwave")
   end,
   sort = function(a) return d.get(a, "tags.albumartist") end,
 })
