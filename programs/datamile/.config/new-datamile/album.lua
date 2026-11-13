@@ -1,48 +1,152 @@
-d.media.type("album")
+local album = d.media.type("album")
 
-d.compile.album.tag("albumartists", function(source)
-  return d.get(d.fs.read_toml(d.fs.joinpath(source.path, "album.toml")), "album.albumartists")
+album.input("history", function(ctx)
+  return d.fs.read_toml(d.fs.joinpath(ctx.path, "history.toml"))
 end)
 
-d.compile.album.tag("media", function(source)
-  return d.get(d.fs.read_toml(d.fs.joinpath(source.path, "album.toml")), "album.media")
+album.input("discogs", function(ctx)
+  return d.fs.read_json(d.fs.joinpath(ctx.path, "Info/discogs_master.json"))
 end)
 
-d.compile.album.tag("collection", function(source)
-  return d.get(d.fs.read_toml(d.fs.joinpath(source.path, "album.toml")), "album.collection")
+album.input("mb_release", function(ctx)
+  return d.fs.read_json(d.fs.joinpath(ctx.path, "Info/musicbrainz_release.json"))
 end)
 
-d.compile.album.tag("shelves", function(source)
-  return d.get(d.fs.read_toml(d.fs.joinpath(source.path, "album.toml")), "album.shelves")
+album.input("cover_metrics", function(ctx)
+  return d.fs.read_json(d.fs.joinpath(ctx.path, "Info/cover_metrics.json"))
 end)
 
-d.compile.album.tag("my_year", function(source)
-  return d.get(d.fs.read_toml(d.fs.joinpath(source.path, "album.toml")), "album.my_year")
+local function count(tbl)
+  local n = 0
+  for _ in pairs(tbl) do n = n + 1 end
+  return n
+end
+
+-- All lyric files for the album, read once per album.
+local function list_lyrics(album_path)
+  local files = {}
+  for _, dirname in ipairs({ "Lyrics", "lyrics" }) do
+    local dir = d.fs.joinpath(album_path, dirname)
+    if d.fs.exists(dir) then
+      for rel, kind in d.fs.dir(dir, { depth = 1 }) do
+        local ext = rel:match("%.([^.]+)$")
+        if kind == "file" and (ext == "lrc" or ext == "txt") then
+          table.insert(files, d.fs.joinpath(dir, rel))
+        end
+      end
+    end
+  end
+  return files
+end
+
+local function lyrics_patterns(disc, number, total_discs)
+  local patterns = {}
+  if total_discs > 1 then
+    table.insert(patterns, string.format("^0*%d%%.0*%d[%%s%%._%%-]", disc, number))
+    table.insert(patterns, string.format("^0*%d%%-0*%d[%%s%%._%%-]", disc, number))
+    table.insert(patterns, string.format("^%d%02d[%%s%%._%%-]", disc, number))
+  end
+  table.insert(patterns, string.format("^0*%d[%%s%%._%%-]", number))
+  return patterns
+end
+
+local function find_lyrics(files, patterns)
+  for _, file in ipairs(files) do
+    local name = d.fs.basename(file)
+    for _, pattern in ipairs(patterns) do
+      if name:find(pattern) then
+        return file
+      end
+    end
+  end
+  return nil
+end
+
+-- MusicBrainz track lookup keyed by "disc:number", built once per album.
+local function index_mb(release)
+  local index = {}
+  for _, medium in ipairs(d.get(release, "media") or {}) do
+    local position = tonumber(d.get(medium, "position")) or 1
+    for _, track in ipairs(d.get(medium, "tracks") or {}) do
+      local number = tonumber(d.get(track, "position")) or 0
+      index[position .. ":" .. number] = track
+    end
+  end
+  return index
+end
+
+-- One harvest pass per album; each track seed carries its audio, MusicBrainz
+-- track and lyric file downward.
+album.child("tracks", "track", function(ctx)
+  if ctx.virtual then
+    local album_meta = d.get(ctx, "manifest.album") or {}
+    local seeds = {}
+    for _, entry in ipairs(d.get(ctx, "manifest.tracks") or {}) do
+      table.insert(seeds, { manifest = d.tbl.extend("force", album_meta, entry) })
+    end
+    return seeds
+  end
+
+  local seeds = d.media.select("track", { path = ctx.path, recursive = true })
+
+  local discs = {}
+  for _, seed in ipairs(seeds) do
+    discs[tostring(d.get(seed.audio, "tags.discnumber") or 1)] = true
+  end
+
+  local total_discs = math.max(count(discs), 1)
+  local lyrics = list_lyrics(ctx.path)
+  local mb = index_mb(ctx.mb_release)
+
+  for _, seed in ipairs(seeds) do
+    local disc = tonumber(d.get(seed.audio, "tags.discnumber")) or 1
+    local number = tonumber(d.get(seed.audio, "tags.tracknumber")) or 0
+    seed.mb_track = mb[disc .. ":" .. number]
+    seed.lyrics_path = find_lyrics(lyrics, lyrics_patterns(disc, number, total_discs))
+  end
+
+  return seeds
 end)
 
-d.compile.album.tag("replaygain_album_gain", function(source)
-  return d.get(d.fs.read_toml(d.fs.joinpath(source.path, "album.toml")), "album.replaygain_album_gain")
+album.tag("albumartists", function(ctx)
+  return d.get(ctx, "manifest.album.albumartists")
 end)
 
-d.compile.album.tag("genre", function(source)
-  return d.fn.coalesce(
-    d.get(d.fs.read_toml(d.fs.joinpath(source.path, "album.toml")), "album.genre"),
-    { "Unknown" }
-  )
+album.tag("media", function(ctx)
+  return d.get(ctx, "manifest.album.media")
 end)
 
-d.compile.album.tag("styles", function(source)
-  return d.get(d.fs.read_json(d.fs.joinpath(source.path, "Info/discogs_master.json")), "styles")
+album.tag("collection", function(ctx)
+  return d.get(ctx, "manifest.album.collection")
 end)
 
-d.compile.album.tag("comment", function(source)
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
-  local country = d.get(manifest, "album.country") or ""
-  local label = d.get(manifest, "album.label") or ""
-  local catalog = d.get(manifest, "album.catalognumber") or ""
+album.tag("shelves", function(ctx)
+  return d.get(ctx, "manifest.album.shelves")
+end)
+
+album.tag("my_year", function(ctx)
+  return d.get(ctx, "manifest.album.my_year")
+end)
+
+album.tag("replaygain_album_gain", function(ctx)
+  return d.get(ctx, "manifest.album.replaygain_album_gain")
+end)
+
+album.tag("genre", function(ctx)
+  return d.fn.coalesce(d.get(ctx, "manifest.album.genre"), { "Unknown" })
+end)
+
+album.tag("styles", function(ctx)
+  return d.get(ctx, "discogs.styles")
+end)
+
+album.tag("comment", function(ctx)
+  local country = d.get(ctx, "manifest.album.country") or ""
+  local label = d.get(ctx, "manifest.album.label") or ""
+  local catalog = d.get(ctx, "manifest.album.catalognumber") or ""
 
   if country ~= "" or label ~= "" or catalog ~= "" then
-    local date = d.get(manifest, "album.release_date")
+    local date = d.get(ctx, "manifest.album.release_date")
     local year = date and date:sub(1, 4) or ""
     local parts = {}
     if year ~= "" then table.insert(parts, year) end
@@ -52,108 +156,90 @@ d.compile.album.tag("comment", function(source)
     return table.concat(parts, " ")
   end
 
-  return d.get(manifest, "album.comment")
+  return d.get(ctx, "manifest.album.comment")
 end)
 
-d.compile.album.tag("custom_albumartist", function(source)
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
+album.tag("custom_albumartist", function(ctx)
   return d.fn.coalesce(
-    d.get(manifest, "album.custom_albumartist"),
-    d.get(manifest, "album.artistartist"),
-    d.get(manifest, "album.albumartist")
+    d.get(ctx, "manifest.album.custom_albumartist"),
+    d.get(ctx, "manifest.album.artistartist"),
+    d.get(ctx, "manifest.album.albumartist")
   )
 end)
 
-d.compile.album.tag("cover_chroma", function(source)
-  return d.get(d.fs.read_json(d.fs.joinpath(source.path, "Info/cover_metrics.json")), "chroma")
+album.tag("cover_chroma", function(ctx)
+  return d.get(ctx, "cover_metrics.chroma")
 end)
 
-d.compile.album.tag("cover_entropy", function(source)
-  return d.get(d.fs.read_json(d.fs.joinpath(source.path, "Info/cover_metrics.json")), "entropy")
+album.tag("cover_entropy", function(ctx)
+  return d.get(ctx, "cover_metrics.entropy")
 end)
 
-d.compile.album.tag("path", function(source)
-  return d.fs.relpath(REGISTRY.config.storage.music_directory, source.path)
+album.tag("path", function(ctx)
+  return d.fs.relpath(REGISTRY.config.storage.music_directory, ctx.path)
 end)
 
-d.compile.album.tag("musicbrainz_albumid", function(source)
-  local release = d.fs.read_json(d.fs.joinpath(source.path, "Info/musicbrainz_release.json"))
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
-  return d.get(release, "id") or d.get(manifest, "album.musicbrainz_albumid")
+album.tag("musicbrainz_albumid", function(ctx)
+  return d.get(ctx, "mb_release.id") or d.get(ctx, "manifest.album.musicbrainz_albumid")
 end)
 
-d.compile.album.tag("musicbrainz_releasegroupid", function(source)
-  local release = d.fs.read_json(d.fs.joinpath(source.path, "Info/musicbrainz_release.json"))
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
-  return d.get(release, "release-group.id") or d.get(manifest, "album.musicbrainz_releasegroupid")
+album.tag("musicbrainz_releasegroupid", function(ctx)
+  return d.get(ctx, "mb_release.release-group.id")
+    or d.get(ctx, "manifest.album.musicbrainz_releasegroupid")
 end)
 
-d.compile.album.tag("musicbrainz_albumartistid", function(source)
-  local release = d.fs.read_json(d.fs.joinpath(source.path, "Info/musicbrainz_release.json"))
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
-  return d.get(release, "artist-credit.1.artist.id") or d.get(manifest, "album.musicbrainz_albumartistid")
+album.tag("musicbrainz_albumartistid", function(ctx)
+  return d.get(ctx, "mb_release.artist-credit.1.artist.id")
+    or d.get(ctx, "manifest.album.musicbrainz_albumartistid")
 end)
 
-d.compile.album.tag("musicbrainz_releasetype", function(source)
-  local release = d.fs.read_json(d.fs.joinpath(source.path, "Info/musicbrainz_release.json"))
-  local primary = d.get(release, "release-group.primary-type")
-  local secondary = d.get(release, "release-group.secondary-types")
+album.tag("musicbrainz_releasetype", function(ctx)
+  local primary = d.get(ctx, "mb_release.release-group.primary-type")
+  local secondary = d.get(ctx, "mb_release.release-group.secondary-types")
   if primary and secondary and #secondary > 0 then
     return primary .. "; " .. table.concat(secondary, "; ")
   end
-  return primary or d.get(d.fs.read_toml(d.fs.joinpath(source.path, "album.toml")), "album.musicbrainz_releasetype")
+  return primary or d.get(ctx, "manifest.album.musicbrainz_releasetype")
 end)
 
-d.compile.album.tag("releasecountry", function(source)
-  local release = d.fs.read_json(d.fs.joinpath(source.path, "Info/musicbrainz_release.json"))
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
-  return d.get(release, "country") or d.get(manifest, "album.country")
+album.tag("releasecountry", function(ctx)
+  return d.get(ctx, "mb_release.country") or d.get(ctx, "manifest.album.country")
 end)
 
-d.compile.album.tag("label", function(source)
-  local release = d.fs.read_json(d.fs.joinpath(source.path, "Info/musicbrainz_release.json"))
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
-  return d.get(release, "label-info.1.label.name") or d.get(manifest, "album.label")
+album.tag("label", function(ctx)
+  return d.get(ctx, "mb_release.label-info.1.label.name") or d.get(ctx, "manifest.album.label")
 end)
 
-d.compile.album.tag("catalognumber", function(source)
-  local release = d.fs.read_json(d.fs.joinpath(source.path, "Info/musicbrainz_release.json"))
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
-  return d.get(release, "label-info.1.catalog-number") or d.get(manifest, "album.catalognumber")
+album.tag("catalognumber", function(ctx)
+  return d.get(ctx, "mb_release.label-info.1.catalog-number")
+    or d.get(ctx, "manifest.album.catalognumber")
 end)
 
-d.compile.album.tag("date_added_foobar", function(source)
-  local history = d.fs.read_toml(d.fs.joinpath(source.path, "history.toml"))
-  return d.fn.type_check(d.get(history, "album.date_added_foobar"), "datetime")
+album.tag("date_added_foobar", function(ctx)
+  return d.fn.type_check(d.get(ctx, "history.album.date_added_foobar"), "datetime")
 end)
 
-d.compile.album.tag("date_added_applemusic", function(source)
-  local history = d.fs.read_toml(d.fs.joinpath(source.path, "history.toml"))
-  return d.fn.type_check(d.get(history, "album.date_added_applemusic"), "datetime")
+album.tag("date_added_applemusic", function(ctx)
+  return d.fn.type_check(d.get(ctx, "history.album.date_added_applemusic"), "datetime")
 end)
 
-d.compile.album.tag("date_added_youtube", function(source)
-  local history = d.fs.read_toml(d.fs.joinpath(source.path, "history.toml"))
-  return d.fn.type_check(d.get(history, "album.date_added_youtube"), "datetime")
+album.tag("date_added_youtube", function(ctx)
+  return d.fn.type_check(d.get(ctx, "history.album.date_added_youtube"), "datetime")
 end)
 
-d.compile.album.tag("date_added_datamile", function(source)
-  local history = d.fs.read_toml(d.fs.joinpath(source.path, "history.toml"))
-  return d.fn.type_check(d.get(history, "album.date_added_datamile"), "datetime")
+album.tag("date_added_datamile", function(ctx)
+  return d.fn.type_check(d.get(ctx, "history.album.date_added_datamile"), "datetime")
 end)
 
-d.compile.album.tag("date_added_applemusic_unknown", function(source)
-  local history = d.fs.read_toml(d.fs.joinpath(source.path, "history.toml"))
-  return d.fn.type_check(d.get(history, "album.date_added_applemusic_unknown"), "datetime")
+album.tag("date_added_applemusic_unknown", function(ctx)
+  return d.fn.type_check(d.get(ctx, "history.album.date_added_applemusic_unknown"), "datetime")
 end)
 
-d.compile.album.tag("date_added_datamile_unknown", function(source)
-  local history = d.fs.read_toml(d.fs.joinpath(source.path, "history.toml"))
-  return d.fn.type_check(d.get(history, "album.date_added_datamile_unknown"), "datetime")
+album.tag("date_added_datamile_unknown", function(ctx)
+  return d.fn.type_check(d.get(ctx, "history.album.date_added_datamile_unknown"), "datetime")
 end)
 
-d.compile.album.tag("date_added", function(source)
-  local history = d.fs.read_toml(d.fs.joinpath(source.path, "history.toml"))
+album.tag("date_added", function(ctx)
   local keys = {
     "date_added_youtube",
     "date_added_applemusic",
@@ -165,7 +251,7 @@ d.compile.album.tag("date_added", function(source)
 
   local earliest = nil
   for _, key in ipairs(keys) do
-    local value = d.get(history, "album." .. key)
+    local value = d.get(ctx, "history.album." .. key)
     if value and value ~= "" and (not earliest or value < earliest) then
       earliest = value
     end
@@ -174,59 +260,16 @@ d.compile.album.tag("date_added", function(source)
   return earliest
 end)
 
-d.compile.album.object("info", function(source)
-  local tracks = d.media.select("track", source)
-  local duration = 0
-  local discs = {}
-
-  for _, track in ipairs(tracks) do
-    local disc = d.get(track, "data.discnumber")
-    if not disc and track.path then
-      disc = d.get(d.fs.read_audio(track.path), "tags.discnumber")
-    end
-    discs[tostring(disc or "1")] = true
-
-    if track.path then
-      duration = duration + (d.fs.read_audio(track.path).duration_milliseconds or 0)
-    end
-  end
-
-  local total_discs = 0
-  for _ in pairs(discs) do total_discs = total_discs + 1 end
-  if total_discs < 1 then total_discs = 1 end
-
-  local total_secs = math.floor(duration / 1000)
-  local hours = math.floor(total_secs / 3600)
-  local mins = math.floor((total_secs % 3600) / 60)
-  local secs = total_secs - (hours * 3600) - (mins * 60)
-  local formatted = hours > 0
-    and string.format("%d:%02d:%02d", hours, mins, secs)
-    or string.format("%d:%02d", mins, secs)
-
-  local virtual_toml = d.fs.joinpath(source.path, "virtual.toml")
-  local virtual = d.fs.exists(virtual_toml)
-    and d.get(d.fs.read_toml(virtual_toml), "album.virtual") == true
-    or false
-
-  return {
-    virtual = virtual,
-    total_tracks = #tracks,
-    total_discs = total_discs,
-    duration_milliseconds = duration,
-    duration_formatted = formatted,
-  }
-end)
-
-d.compile.album.object("manifests", function(source)
+album.object("manifests", function(ctx)
   local result = {}
 
   for _, name in ipairs({ "album", "history", "id", "local", "theme", "virtual" }) do
-    local file = d.fs.joinpath(source.path, name .. ".toml")
+    local file = d.fs.joinpath(ctx.path, name .. ".toml")
     if d.fs.exists(file) then
       local stat = d.fs.stat(file)
       result[name] = {
         file = {
-          path = d.fs.relpath(source.path, file),
+          path = d.fs.relpath(ctx.path, file),
           mtime = stat.mtime,
           byte_size = stat.byte_size,
         },
@@ -237,13 +280,10 @@ d.compile.album.object("manifests", function(source)
   return result
 end)
 
-d.compile.album.object("verified", function(source)
-  local manifest = d.fs.read_toml(d.fs.joinpath(source.path, "album.toml"))
-  local history = d.fs.read_toml(d.fs.joinpath(source.path, "history.toml"))
-
+album.object("verified", function(ctx)
   for _, field in ipairs({ "albumartist", "album", "date" }) do
-    local meta = d.get(manifest, "album." .. field)
-    local hist = d.get(history, "album." .. field)
+    local meta = d.get(ctx, "manifest.album." .. field)
+    local hist = d.get(ctx, "history.album." .. field)
     if hist and meta and meta ~= hist then
       error(string.format("%s diverged! Metadata: '%s' | History: '%s'", field, tostring(meta), tostring(hist)))
     end
@@ -251,26 +291,3 @@ d.compile.album.object("verified", function(source)
 
   return true
 end)
-
-d.compile.album.images("main", function(source)
-  for _, name in ipairs({
-    "cover.png",
-    "cover.jpg",
-    "cover.jpeg",
-    "folder.png",
-    "folder.jpg",
-    "folder.jpeg",
-  }) do
-    if d.fs.exists(d.fs.joinpath(source.path, name)) then
-      return {
-        fit = { "crop", 1080, 1080 },
-        filter = "catmullrom",
-        sources = name,
-      }
-    end
-  end
-
-  return nil
-end)
-
-d.compile.album.media("tracks", "track")
