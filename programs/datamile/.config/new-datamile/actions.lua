@@ -172,7 +172,7 @@ datamile.action("embed", {
       local multi_disc = d.get(album, "objects.info.total_discs") > 1
 
       for _, track in ipairs(tracks) do
-        add_arg(args, "--track", d.get(track, "objects.file.path"))
+        add_arg(args, "--track", d.get(track, "location.path"))
         add_arg(args, "--album", d.get(album, "tags.album"))
         add_arg(args, "--albumartist", d.get(album, "tags.albumartist"))
         add_arg(args, "--date", d.get(album, "tags.date"))

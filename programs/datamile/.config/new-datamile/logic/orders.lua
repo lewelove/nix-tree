@@ -75,7 +75,7 @@ datamile.order("last_edited", { label = "Last Edited",
     local tracks = d.get(a, "tracks")
     if type(tracks) == "table" then
       for _, t in ipairs(tracks) do
-        local mtime = tonumber(d.get(t, "objects.file.mtime")) or 0
+        local mtime = tonumber(d.get(t, "location.mtime")) or 0
         if mtime > max_mtime then max_mtime = mtime end
       end
     end
