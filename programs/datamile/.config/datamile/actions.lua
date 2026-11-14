@@ -42,6 +42,26 @@ datamile.action("open_terminal", {
   end
 })
 
+datamile.action("update", {
+  label = "Update",
+  description = "Recompile selected entities",
+  run = function(ctx)
+    for _, entry in ipairs(ctx.entities) do
+      local args = { rust_bin("datamile"), "update", entry.path, "--force" }
+      if ctx.config_path then
+        table.insert(args, "--config")
+        table.insert(args, ctx.config_path)
+      end
+      for arg in ctx.options:gmatch("%S+") do
+        if arg ~= "--force" and arg ~= "-f" then
+          table.insert(args, arg)
+        end
+      end
+      d.system(args, { stdio = "inherit" })
+    end
+  end
+})
+
 datamile.action("open_config_in_terminal", {
   label = "Open Config in Terminal",
   description = "Open terminal inside Datamile configuration directory",
