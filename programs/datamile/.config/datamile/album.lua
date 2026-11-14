@@ -1,12 +1,13 @@
-local album = d.media.type("album")
+local ALBUM_ROOT = "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/"
 
-album.lock(function(target)
-  return d.fs.joinpath(target.path, "album.lock.json")
-end)
-
-album.select(function(scope)
-  return d.fs.roots(scope, { marker = "album.toml", prune = false })
-end)
+local album = d.media("album", {
+  kind = "root",
+  dir = ALBUM_ROOT,
+  select = function(dir)
+    return d.fs.roots(dir, { marker = "album.toml", prune = false })
+  end,
+  children = { tracks = "track" },
+})
 
 album.input("manifest", function(ctx)
   return d.fs.read_toml(d.fs.joinpath(ctx.path, "album.toml"))
@@ -43,29 +44,6 @@ local function list_lyrics(album_path)
   return files
 end
 
-local function lyrics_patterns(disc, number, total_discs)
-  local patterns = {}
-  if total_discs > 1 then
-    table.insert(patterns, string.format("^0*%d%%.0*%d[%%s%%._%%-]", disc, number))
-    table.insert(patterns, string.format("^0*%d%%-0*%d[%%s%%._%%-]", disc, number))
-    table.insert(patterns, string.format("^%d%02d[%%s%%._%%-]", disc, number))
-  end
-  table.insert(patterns, string.format("^0*%d[%%s%%._%%-]", number))
-  return patterns
-end
-
-local function find_lyrics(files, patterns)
-  for _, file in ipairs(files) do
-    local name = d.fs.basename(file)
-    for _, pattern in ipairs(patterns) do
-      if name:find(pattern) then
-        return file
-      end
-    end
-  end
-  return nil
-end
-
 -- MusicBrainz track lookup keyed by "disc:number", built once per album.
 local function index_mb(release)
   local index = {}
@@ -79,55 +57,36 @@ local function index_mb(release)
   return index
 end
 
--- One harvest pass per album; each track seed carries its audio, MusicBrainz
--- track and lyric file downward.
-album.child("tracks", "track", function(ctx)
-  if ctx.virtual then
-    local album_meta = d.get(ctx, "manifest.album") or {}
-    local seeds = {}
-    for _, entry in ipairs(d.get(ctx, "manifest.tracks") or {}) do
-      table.insert(seeds, { manifest = d.tbl.extend("force", album_meta, entry) })
-    end
-    return seeds
+local function audio_extensions()
+  local configured = d.get(REGISTRY.config, "compiler.audio_extensions")
+    or d.get(REGISTRY.config, "manifest.audio_extensions")
+  if type(configured) == "table" and #configured > 0 then
+    return configured
   end
 
-  local seeds = d.media.select("track", { path = ctx.path, recursive = true })
+  return d.fs.audio_extensions()
+end
 
+local function count_discs(path)
   local discs = {}
-  for _, seed in ipairs(seeds) do
-    discs[tostring(d.get(seed.audio, "tags.discnumber") or 1)] = true
+  for _, file in ipairs(d.fs.files(path, { ext = audio_extensions() })) do
+    local tags = d.get(d.fs.read_audio(file), "tags") or {}
+    discs[tostring(tags.discnumber or 1)] = true
   end
 
-  local total_discs = math.max(d.tbl.count(discs), 1)
-  local lyrics = list_lyrics(ctx.path)
-  local mb = index_mb(ctx.mb_release)
+  return math.max(d.tbl.count(discs), 1)
+end
 
-  for _, seed in ipairs(seeds) do
-    local disc = tonumber(d.get(seed.audio, "tags.discnumber")) or 1
-    local number = tonumber(d.get(seed.audio, "tags.tracknumber")) or 0
-    seed.mb_track = mb[disc .. ":" .. number]
-    seed.lyrics_path = find_lyrics(lyrics, lyrics_patterns(disc, number, total_discs))
-  end
-
-  return seeds
+album.input("lyrics_files", function(ctx)
+  return list_lyrics(ctx.path)
 end)
 
-album.id(function(ctx)
-  local media = d.get(REGISTRY.config, "storage.media_directory")
-  if not media or media == "" then
-    return nil
-  end
-
-  return d.fs.relpath(media, ctx.path)
+album.input("mb_index", function(ctx)
+  return index_mb(ctx.mb_release)
 end)
 
-album.location(function(ctx)
-  local stat = d.fs.stat(ctx.path)
-  if not stat then
-    return nil
-  end
-
-  return { kind = "directory", path = ctx.path, mtime = stat.mtime }
+album.input("total_discs", function(ctx)
+  return count_discs(ctx.path)
 end)
 
 album.tag("albumartist", function(ctx)
@@ -212,7 +171,7 @@ album.tag("cover_entropy", function(ctx)
 end)
 
 album.tag("path", function(ctx)
-  return d.fs.relpath(REGISTRY.config.storage.media_directory, ctx.path)
+  return d.fs.relpath(ALBUM_ROOT, ctx.path)
 end)
 
 album.tag("musicbrainz_albumid", function(ctx)
@@ -387,25 +346,12 @@ album.image("main", function(ctx)
   }
 end)
 
-album.object("manifests", function(ctx)
-  local result = {}
-
-  for _, name in ipairs({ "album", "history", "id", "local", "theme", "virtual" }) do
-    local file = d.fs.joinpath(ctx.path, name .. ".toml")
-    local stat = d.fs.stat(file)
-    if stat then
-      result[name] = {
-        file = {
-          path = d.fs.relpath(ctx.path, file),
-          mtime = stat.mtime,
-          byte_size = stat.byte_size,
-        },
-      }
-    end
-  end
-
-  return result
-end)
+for _, name in ipairs({ "album", "history", "id", "local", "theme", "virtual" }) do
+  local manifest_name = name
+  album.file(manifest_name, function(ctx)
+    return d.fs.joinpath(ctx.path, manifest_name .. ".toml")
+  end)
+end
 
 album.object("verified", function(ctx)
   for _, field in ipairs({ "albumartist", "album", "date" }) do

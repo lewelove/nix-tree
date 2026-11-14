@@ -30,7 +30,8 @@
       theme
 
       # Network
-      sing-box
+      # sing-box
+      v2raya
 
       # Scripts
       cliphist-copy
@@ -85,13 +86,12 @@
       bitwarden
       discord
       obs
-      qutebrowser
 
       cliphist
       thunar
       quickshell
       datamile
-      figma
+      # figma
       syncthing
       syncthing-web-app
 
@@ -107,6 +107,7 @@
       mympd
       mympd-web-app
 
+      datamile-web-app
       navidrome-web-app
       jellyfin-web-app
       qbittorrent-web-app

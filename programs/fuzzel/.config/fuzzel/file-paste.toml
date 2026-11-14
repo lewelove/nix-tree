@@ -8,9 +8,9 @@ datamile = {
   ]
 }
 
-nix-config = {
-  run = "repomix ~/nix-config --quiet",
-  paste = [ "~/Folders/XML Packed/~-nix-config.xml" ]
+nix-tree = {
+  run = "repomix ~/nix-tree --quiet",
+  paste = [ "~/Folders/XML Packed/~-nix-tree.xml" ]
 }
 
 "starve!" = {

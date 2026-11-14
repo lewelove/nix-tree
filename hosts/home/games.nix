@@ -1,8 +1,8 @@
 { pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     prismlauncher
-    rimsort
-    steamcmd
+    # rimsort
+    # steamcmd
   ];
 
   powerManagement = {

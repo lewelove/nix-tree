@@ -51,6 +51,13 @@ in
         source = "/home/${id.user}/virtual/box";
         mountPoint = "/home/${id.user}";
       }
+      {
+        proto = "virtiofs";
+        tag = "music-library";
+        source = "/run/media/${id.user}/1000xhome/backup-everything/FB2K/Library Historyfied!";
+        mountPoint = "/mnt/library";
+        readOnly = true;
+      }
     ];
 
     volumes = [

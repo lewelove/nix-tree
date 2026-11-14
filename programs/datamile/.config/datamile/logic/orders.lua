@@ -64,11 +64,21 @@ datamile.order("last_edited", { label = "Last Edited",
   sort = function(a)
     local max_mtime = 0
 
-    local manifests = d.get(a, "objects.manifests")
-    if type(manifests) == "table" then
-      for _, m in pairs(manifests) do
-        local mtime = tonumber(d.get(m, "file.mtime")) or 0
-        if mtime > max_mtime then max_mtime = mtime end
+    local function consider(entry)
+      local mtime = tonumber(d.get(entry, "mtime")) or 0
+      if mtime > max_mtime then max_mtime = mtime end
+    end
+
+    local files = d.get(a, "files")
+    if type(files) == "table" then
+      for _, entry in pairs(files) do
+        if d.tbl.islist(entry) then
+          for _, item in ipairs(entry) do
+            consider(item)
+          end
+        else
+          consider(entry)
+        end
       end
     end
 

@@ -29,6 +29,8 @@
       btop
       nvim
       devenv
+
+      datamile
     ]);
   };
 }

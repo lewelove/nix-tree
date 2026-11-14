@@ -43,7 +43,7 @@
         ];
 
         instances.default = {
-          proxy = "socks5://192.168.1.100:20170";
+          proxy = "socks5://127.0.0.1:20170";
           extensions = [
             extensions.ublock-origin
             extensions.sponsorblock

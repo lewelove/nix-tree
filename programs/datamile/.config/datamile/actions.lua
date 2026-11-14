@@ -8,6 +8,16 @@ local function py_bin(name)
   return d.fs.normalize(d.fs.joinpath(root_dir, "actions", name))
 end
 
+local function entity_path(entry, path)
+  if not path then
+    return nil
+  end
+  if path:sub(1, 1) == "/" then
+    return path
+  end
+  return d.fs.joinpath(entry.path, path)
+end
+
 local function add_arg(args, flag, val)
   if val == nil or val == "" or val == "Unknown" then
     return
@@ -164,15 +174,15 @@ datamile.action("embed", {
         "--delete-other-covers",
       }
 
-      local cover_path = d.get(album, "images.main.1.source.file.path")
+      local cover_path = entity_path(entry, d.get(album, "images.main.1.source.file.path"))
       if cover_path then
-        add_arg(args, "--cover", d.fs.joinpath(entry.path, cover_path))
+        add_arg(args, "--cover", cover_path)
       end
 
       local multi_disc = d.get(album, "objects.info.total_discs") > 1
 
       for _, track in ipairs(tracks) do
-        add_arg(args, "--track", d.get(track, "location.path"))
+        add_arg(args, "--track", entity_path(entry, d.get(track, "location.path")))
         add_arg(args, "--album", d.get(album, "tags.album"))
         add_arg(args, "--albumartist", d.get(album, "tags.albumartist"))
         add_arg(args, "--date", d.get(album, "tags.date"))

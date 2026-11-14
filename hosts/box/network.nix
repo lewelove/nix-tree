@@ -53,7 +53,7 @@
         {
           type = "socks";
           tag = "v2raya-proxy";
-          server = "192.168.1.100";
+          server = "10.0.2.2";
           server_port = 20170;
         }
         {

@@ -35,7 +35,6 @@
       android-tools
 
       python3
-      rustup
 
       distrobox
 

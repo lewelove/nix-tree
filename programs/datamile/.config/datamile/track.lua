@@ -1,5 +1,3 @@
-local track = d.media.type("track")
-
 local function audio_extensions()
   local configured = d.get(REGISTRY.config, "compiler.audio_extensions")
     or d.get(REGISTRY.config, "manifest.audio_extensions")
@@ -11,33 +9,108 @@ local function audio_extensions()
 end
 
 local function harvest(path)
-  local seeds = {}
+  local files = {}
   for _, file in ipairs(d.fs.files(path, { ext = audio_extensions() })) do
-    table.insert(seeds, { path = file, audio = d.fs.read_audio(file) })
+    table.insert(files, { path = file, audio = d.fs.read_audio(file) })
   end
 
-  return d.list.sort_by(seeds, function(item)
+  local sorted = d.list.sort_by(files, function(item)
     return {
       d.str.leading_int(d.get(item.audio, "tags.discnumber")) or 1,
       d.str.leading_int(d.get(item.audio, "tags.tracknumber")) or math.huge,
       item.path,
     }
   end)
+
+  local paths = {}
+  for _, item in ipairs(sorted) do
+    table.insert(paths, item.path)
+  end
+
+  return paths
 end
 
-track.select(function(scope)
-  return harvest(scope.path)
-end)
+local track = d.media("track", {
+  kind = { "file", "virtual" },
+  select = function(parent)
+    if parent.virtual then
+      local album_meta = d.get(parent, "manifest.album") or {}
+      local seeds = {}
+      for _, entry in ipairs(d.get(parent, "manifest.tracks") or {}) do
+        table.insert(seeds, { manifest = d.tbl.extend("force", album_meta, entry) })
+      end
+      return seeds
+    end
+
+    return harvest(parent.path)
+  end,
+})
+
+local function disc_number(ctx)
+  return tonumber(d.get(ctx, "audio.tags.discnumber"))
+    or tonumber(d.get(ctx, "manifest.discnumber"))
+    or 1
+end
+
+local function track_number(ctx)
+  return tonumber(d.get(ctx, "audio.tags.tracknumber"))
+    or tonumber(d.get(ctx, "manifest.tracknumber"))
+    or 0
+end
+
+local function lyrics_patterns(disc, number, total_discs)
+  local patterns = {}
+  if total_discs > 1 then
+    table.insert(patterns, string.format("^0*%d%%.0*%d[%%s%%._%%-]", disc, number))
+    table.insert(patterns, string.format("^0*%d%%-0*%d[%%s%%._%%-]", disc, number))
+    table.insert(patterns, string.format("^%d%02d[%%s%%._%%-]", disc, number))
+  end
+  table.insert(patterns, string.format("^0*%d[%%s%%._%%-]", number))
+  return patterns
+end
+
+local function find_lyrics(files, patterns)
+  for _, file in ipairs(files) do
+    local name = d.fs.basename(file)
+    for _, pattern in ipairs(patterns) do
+      if name:find(pattern) then
+        return file
+      end
+    end
+  end
+  return nil
+end
 
 track.input("audio", function(ctx)
-  if ctx.audio ~= nil then
-    return ctx.audio
-  end
   if ctx.path == nil then
     return nil
   end
 
   return d.fs.read_audio(ctx.path)
+end)
+
+track.input("mb_track", function(ctx)
+  if ctx.path == nil then
+    return nil
+  end
+
+  local index = d.get(ctx, "parent.mb_index") or {}
+  local key = disc_number(ctx) .. ":" .. track_number(ctx)
+  return index[key]
+end)
+
+track.input("lyrics_path", function(ctx)
+  if ctx.path == nil then
+    return nil
+  end
+
+  local files = d.get(ctx, "parent.lyrics_files") or {}
+  local total_discs = d.get(ctx, "parent.total_discs") or 1
+  return find_lyrics(files, lyrics_patterns(disc_number(ctx), track_number(ctx), total_discs))
+end)
+
+track.file("lyrics", function(ctx)
+  return ctx.lyrics_path
 end)
 
 track.id(function(ctx)
@@ -54,24 +127,6 @@ track.id(function(ctx)
     number,
     tags.title or "",
   }, " - ")
-end)
-
-track.location(function(ctx)
-  if ctx.path == nil then
-    return nil
-  end
-
-  local stat = d.fs.stat(ctx.path)
-  if not stat then
-    return nil
-  end
-
-  return {
-    kind = "file",
-    path = ctx.path,
-    mtime = stat.mtime,
-    byte_size = stat.byte_size,
-  }
 end)
 
 local function from(ctx, key)
