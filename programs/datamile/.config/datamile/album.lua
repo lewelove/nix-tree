@@ -1,5 +1,9 @@
 local ALBUM_ROOT = "/run/media/lewelove/1000xhome/backup-everything/FB2K/Library Historyfied!/"
 
+local function album_root()
+  return d.get(REGISTRY.media, "album.dir") or ALBUM_ROOT
+end
+
 local album = d.media("album", {
   kind = "root",
   dir = ALBUM_ROOT,
@@ -171,7 +175,7 @@ album.tag("cover_entropy", function(ctx)
 end)
 
 album.tag("path", function(ctx)
-  return d.fs.relpath(ALBUM_ROOT, ctx.path)
+  return d.fs.relpath(album_root(), ctx.path)
 end)
 
 album.tag("musicbrainz_albumid", function(ctx)
