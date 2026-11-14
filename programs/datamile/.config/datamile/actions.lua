@@ -36,7 +36,7 @@ datamile.action("open_terminal", {
   label = "Open Terminal",
   description = "Open terminal inside album directory",
   run = function(ctx)
-    for _, entry in ipairs(ctx.albums) do
+    for _, entry in ipairs(ctx.entities) do
       d.system({ "alacritty" }, { cwd = entry.path, detach = true })
     end
   end
@@ -47,17 +47,13 @@ datamile.action("update", {
   description = "Recompile selected entities",
   run = function(ctx)
     for _, entry in ipairs(ctx.entities) do
-      local args = { rust_bin("datamile"), "update", entry.path, "--force" }
-      if ctx.config_path then
-        table.insert(args, "--config")
-        table.insert(args, ctx.config_path)
-      end
+      local args = { entry.path, "--force" }
       for arg in ctx.options:gmatch("%S+") do
         if arg ~= "--force" and arg ~= "-f" then
           table.insert(args, arg)
         end
       end
-      d.system(args, { stdio = "inherit" })
+      d.dispatch.update(args)
     end
   end
 })
@@ -66,7 +62,7 @@ datamile.action("open_config_in_terminal", {
   label = "Open Config in Terminal",
   description = "Open terminal inside Datamile configuration directory",
   run = function(ctx)
-    local config_dir = d.fs.normalize("~/.config/datamile")
+    local config_dir = REGISTRY.config_dir or d.fs.normalize("~/.config/datamile")
     d.system({ "alacritty", "-e", "sh", "-c", 'nvim -s <(printf " e")' }, { cwd = config_dir, detach = true })
   end
 })
@@ -76,7 +72,7 @@ datamile.action("theme", {
   description = "Extract dominant colors from album cover",
   run = function(ctx)
     local is_force = ctx.options:find("%-f") or ctx.options:find("%-%-force")
-    for _, entry in ipairs(ctx.albums) do
+    for _, entry in ipairs(ctx.entities) do
       local args = {
         rust_bin("theme"),
         "--path", entry.path,
@@ -119,7 +115,10 @@ datamile.action("mbf", {
   description = "Fetch raw JSON metadata from MusicBrainz",
   run = function(ctx)
     local url = d.str.trim(ctx.options)
-    local entry = ctx.albums[1]
+    local entry = ctx.entities[1]
+    if not entry or url == "" then
+      error("mbf: a release URL and one entity are required")
+    end
     local info_dir = d.fs.joinpath(entry.path, "Info")
     local rel_file = d.fs.joinpath(info_dir, "musicbrainz_release.json")
     local rg_file = d.fs.joinpath(info_dir, "musicbrainz_releasegroup.json")
@@ -133,6 +132,9 @@ datamile.action("mbf", {
 
     local rel_data = d.fs.read_json(rel_file)
     local rg_id = d.get(rel_data, "release-group.id")
+    if not rg_id or rg_id == "" then
+      error("mbf: release has no release-group id")
+    end
 
     d.system({ "sleep", "1" })
 
@@ -149,10 +151,13 @@ datamile.action("mbffid", {
   label = "MusicBrainz Fetch From ID",
   description = "Fetch raw JSON metadata from MusicBrainz using id.toml",
   run = function(ctx)
-    for _, entry in ipairs(ctx.albums) do
+    for _, entry in ipairs(ctx.entities) do
       local id_path = d.fs.joinpath(entry.path, "id.toml")
       local id_data = d.fs.read_toml(id_path)
       local rel_id = d.get(id_data, "album.musicbrainz_albumid")
+      if not rel_id or rel_id == "" then
+        error("mbffid: id.toml has no album.musicbrainz_albumid")
+      end
 
       local info_dir = d.fs.joinpath(entry.path, "Info")
       local rel_file = d.fs.joinpath(info_dir, "musicbrainz_release.json")
@@ -167,6 +172,9 @@ datamile.action("mbffid", {
 
       local rel_data = d.fs.read_json(rel_file)
       local rg_id = d.get(rel_data, "release-group.id")
+      if not rg_id or rg_id == "" then
+        error("mbffid: release has no release-group id")
+      end
 
       d.system({ "sleep", "1" })
 
@@ -184,10 +192,7 @@ datamile.action("embed", {
   label = "Embed Tags",
   description = "Embed metadata from album.lock.json into audio files",
   run = function(ctx)
-    for _, entry in ipairs(ctx.albums) do
-      local album = entry.lock.album
-      local tracks = album.tracks or {}
-
+    local function embed_album(entry, album)
       local args = {
         rust_bin("embed"),
         "--delete-other-tags",
@@ -199,39 +204,50 @@ datamile.action("embed", {
         add_arg(args, "--cover", cover_path)
       end
 
-      local multi_disc = d.get(album, "objects.info.total_discs") > 1
+      local multi_disc = (tonumber(d.get(album, "objects.info.total_discs")) or 0) > 1
 
-      for _, track in ipairs(tracks) do
-        add_arg(args, "--track", entity_path(entry, d.get(track, "location.path")))
-        add_arg(args, "--album", d.get(album, "tags.album"))
-        add_arg(args, "--albumartist", d.get(album, "tags.albumartist"))
-        add_arg(args, "--date", d.get(album, "tags.date"))
-        add_arg(args, "--genre", d.get(album, "tags.genre"))
-        add_arg(args, "--comment", d.get(album, "tags.comment"))
-        add_arg(args, "--musicbrainz-albumid", d.get(album, "tags.musicbrainz_albumid"))
-        add_arg(args, "--musicbrainz-releasegroupid", d.get(album, "tags.musicbrainz_releasegroupid"))
-        add_arg(args, "--musicbrainz-albumartistid", d.get(album, "tags.musicbrainz_albumartistid"))
-        add_arg(args, "--releasetype", d.get(album, "tags.musicbrainz_releasetype"))
-        add_arg(args, "--releasecountry", d.get(album, "tags.releasecountry") or d.get(album, "tags.country"))
-        add_arg(args, "--barcode", d.get(album, "tags.barcode"))
-        add_arg(args, "--publisher", d.get(album, "tags.label"))
-        add_arg(args, "--catalognumber", d.get(album, "tags.catalognumber"))
-        add_arg(args, "--title", d.get(track, "tags.title"))
-        add_arg(args, "--artist", d.get(track, "tags.artist"))
-        add_arg(args, "--tracknumber", d.get(track, "tags.tracknumber"))
+      for _, track in ipairs(album.tracks or {}) do
+        -- A virtual track has no file; its flags would attach to the previous one.
+        local track_path = entity_path(entry, d.get(track, "location.path"))
+        if track_path then
+          add_arg(args, "--track", track_path)
+          add_arg(args, "--album", d.get(album, "tags.album"))
+          add_arg(args, "--albumartist", d.get(album, "tags.albumartist"))
+          add_arg(args, "--date", d.get(album, "tags.date"))
+          add_arg(args, "--genre", d.get(album, "tags.genre"))
+          add_arg(args, "--comment", d.get(album, "tags.comment"))
+          add_arg(args, "--musicbrainz-albumid", d.get(album, "tags.musicbrainz_albumid"))
+          add_arg(args, "--musicbrainz-releasegroupid", d.get(album, "tags.musicbrainz_releasegroupid"))
+          add_arg(args, "--musicbrainz-albumartistid", d.get(album, "tags.musicbrainz_albumartistid"))
+          add_arg(args, "--releasetype", d.get(album, "tags.musicbrainz_releasetype"))
+          add_arg(args, "--releasecountry", d.get(album, "tags.releasecountry") or d.get(album, "tags.country"))
+          add_arg(args, "--barcode", d.get(album, "tags.barcode"))
+          add_arg(args, "--publisher", d.get(album, "tags.label"))
+          add_arg(args, "--catalognumber", d.get(album, "tags.catalognumber"))
+          add_arg(args, "--title", d.get(track, "tags.title"))
+          add_arg(args, "--artist", d.get(track, "tags.artist"))
+          add_arg(args, "--tracknumber", d.get(track, "tags.tracknumber"))
 
-        if multi_disc then
-          add_arg(args, "--discnumber", d.get(track, "tags.discnumber"))
+          if multi_disc then
+            add_arg(args, "--discnumber", d.get(track, "tags.discnumber"))
+          end
+
+          add_arg(args, "--musicbrainz-releasetrackid", d.get(track, "tags.musicbrainz_releasetrackid"))
+          add_arg(args, "--musicbrainz-trackid", d.get(track, "tags.musicbrainz_trackid") or d.get(track, "tags.musicbrainz_recordingid"))
+          add_arg(args, "--musicbrainz-artistid", d.get(track, "tags.musicbrainz_artistid"))
+          add_arg(args, "--replaygain-track-gain", d.get(track, "tags.replaygain_track_gain"))
+          add_arg(args, "--lyrics", d.get(track, "objects.lyrics.text"))
         end
-
-        add_arg(args, "--musicbrainz-releasetrackid", d.get(track, "tags.musicbrainz_releasetrackid"))
-        add_arg(args, "--musicbrainz-trackid", d.get(track, "tags.musicbrainz_trackid") or d.get(track, "tags.musicbrainz_recordingid"))
-        add_arg(args, "--musicbrainz-artistid", d.get(track, "tags.musicbrainz_artistid"))
-        add_arg(args, "--replaygain-track-gain", d.get(track, "tags.replaygain_track_gain"))
-        add_arg(args, "--lyrics", d.get(track, "objects.lyrics.text"))
       end
 
       d.system(args, { stdio = "inherit" })
+    end
+
+    for _, entry in ipairs(ctx.entities) do
+      local album = entry.lock and entry.lock.album
+      if entry.type == "album" and album then
+        embed_album(entry, album)
+      end
     end
   end
 })
@@ -241,7 +257,7 @@ datamile.action("rename", {
   description = "Standardize track filenames according to metadata",
   run = function(ctx)
     local is_auto = ctx.options:find("%-y") or ctx.options:find("%-%-auto")
-    for _, entry in ipairs(ctx.albums) do
+    for _, entry in ipairs(ctx.entities) do
       local args = { py_bin("rename"), "--path", entry.path }
       if is_auto then
         table.insert(args, "-y")
@@ -257,7 +273,7 @@ datamile.action("lyrics", {
   run = function(ctx)
     local secrets = d.fs.read_dotenv("~/.secrets/datamile.env")
     local token = secrets and secrets.GENIUS_ACCESS_TOKEN
-    for _, entry in ipairs(ctx.albums) do
+    for _, entry in ipairs(ctx.entities) do
       local args = { py_bin("lyrics") }
       add_arg(args, "--path", entry.path)
       add_arg(args, "--token", token)
@@ -270,7 +286,7 @@ datamile.action("search_cover", {
   label = "Search Cover",
   description = "Search high-res artwork on MusicHoarders",
   run = function(ctx)
-    for _, entry in ipairs(ctx.albums) do
+    for _, entry in ipairs(ctx.entities) do
       local artist = d.get(entry, "lock.album.tags.albumartist") or d.get(entry, "lock.album.tags.artist")
       local album = d.get(entry, "lock.album.tags.album")
       local args = { py_bin("search_cover") }
@@ -290,7 +306,7 @@ datamile.action("cover_metrics", {
   description = "Calculate chroma and entropy for album cover",
   run = function(ctx)
     local is_force = ctx.options:find("%-f") or ctx.options:find("%-%-force")
-    for _, entry in ipairs(ctx.albums) do
+    for _, entry in ipairs(ctx.entities) do
       local args = { rust_bin("calculate_cover_metrics"), "--path", entry.path }
       if is_force then
         table.insert(args, "--force")
@@ -324,8 +340,8 @@ datamile.action("mbs", {
       d.system({ launcher, url }, { detach = true })
     end
 
-    if #ctx.albums > 0 then
-      for _, entry in ipairs(ctx.albums) do
+    if #ctx.entities > 0 then
+      for _, entry in ipairs(ctx.entities) do
         local artist = d.get(entry, "lock.album.tags.albumartist") or d.get(entry, "lock.album.tags.artist") or ""
         local title = d.get(entry, "lock.album.tags.album") or ""
         if artist ~= "" or title ~= "" then
@@ -347,7 +363,7 @@ datamile.action("css", {
   label = "Copy Search String",
   description = "Copy 'Artist - Album' search string to clipboard",
   run = function(ctx)
-    local target = ctx.albums and ctx.albums[1]
+    local target = ctx.entities and ctx.entities[1]
     if not target then return end
 
     local artist = d.get(target, "lock.album.tags.albumartist") or d.get(target, "lock.album.tags.artist") or ""
@@ -366,10 +382,15 @@ datamile.action("cs", {
   description = "Download cover image from URL",
   run = function(ctx)
     local url = ctx.options:match("%S+")
+    if not url then
+      error("cs: URL argument is required in options")
+    end
+    local entry = ctx.entities[1]
+    local cwd = entry and entry.path or "."
     local ext = url:gsub("%?.*$", ""):match("(%.[^./\\]+)$") or ""
     local file = string.format("Digital Covers/source%d%s", os.time(), ext)
-    d.system({ "mkdir", "-p", "Digital Covers" })
-    d.system({ "wget", "-O", file, url }, { stdio = "inherit" })
+    d.system({ "mkdir", "-p", "Digital Covers" }, { cwd = cwd })
+    d.system({ "wget", "-O", file, url }, { cwd = cwd, stdio = "inherit" })
   end
 })
 
@@ -384,8 +405,8 @@ datamile.action("rts", {
       d.system.open(url)
     end
 
-    if #ctx.albums > 0 then
-      for _, entry in ipairs(ctx.albums) do
+    if #ctx.entities > 0 then
+      for _, entry in ipairs(ctx.entities) do
         local artist = d.get(entry, "lock.album.tags.albumartist") or d.get(entry, "lock.album.tags.artist") or ""
         local title = d.get(entry, "lock.album.tags.album") or ""
         local query = (artist ~= "" and title ~= "") and (artist .. " " .. title) or (artist .. title)
