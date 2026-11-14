@@ -9,7 +9,7 @@
 --   * d.compile.<type>.file(name, fn) attaches ancillary files.
 --   * d.compile.<type>.tag(name, fn) returns a scalar or a list of scalars.
 --   * d.compile.<type>.object(name, fn) returns arbitrary JSON.
---   * d.compile.<type>.images(name, fn) returns the image contract.
+--   * d.compile.<type>.image(name, fn) returns the image contract.
 --   * Physical select functions return path strings; virtual ones return tables.
 --   * Every compile function receives ctx, including ctx.parent for children.
 --   * id is semantic and runs after tags. Physical ids default to the relative path.
