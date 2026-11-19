@@ -13,7 +13,7 @@
           vim_keys = true;
           presets = "cpu:0:default,proc:0:default,mem:0:default,net:0:default";
           graph_symbol = "braille";
-          update_ms = 1500;
+          update_ms = 1000;
         };
       };
 

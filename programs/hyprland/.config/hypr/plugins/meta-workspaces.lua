@@ -12,7 +12,7 @@ local meta_workspaces = {
   },
   Games = {
     key = "G",
-    on_created_empty = x.steam,
+    -- on_created_empty = x.steam,
   },
   Image = {
     key = "I",

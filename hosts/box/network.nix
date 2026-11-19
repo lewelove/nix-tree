@@ -19,7 +19,8 @@
   };
 
   services.sing-box = {
-    enable = true;
+    # enable = true;
+    enable = false;
     settings = {
       log.level = "warn";
 
