@@ -39,9 +39,6 @@ datamile.config({
   server = {
     port = 8000,
   },
-  manifest = {
-    audio_extensions = { "flac" },
-  },
   compiler = {},
 })
 

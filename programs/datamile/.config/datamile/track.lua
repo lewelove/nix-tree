@@ -1,35 +1,3 @@
-local function audio_extensions()
-  local configured = d.get(REGISTRY.config, "compiler.audio_extensions")
-    or d.get(REGISTRY.config, "manifest.audio_extensions")
-  if type(configured) == "table" and #configured > 0 then
-    return configured
-  end
-
-  return d.fs.audio_extensions()
-end
-
-local function harvest(path)
-  local files = {}
-  for _, file in ipairs(d.fs.files(path, { ext = audio_extensions() })) do
-    table.insert(files, { path = file, audio = d.fs.read_audio(file) })
-  end
-
-  local sorted = d.list.sort_by(files, function(item)
-    return {
-      d.str.leading_int(d.get(item.audio, "tags.discnumber")) or 1,
-      d.str.leading_int(d.get(item.audio, "tags.tracknumber")) or math.huge,
-      item.path,
-    }
-  end)
-
-  local paths = {}
-  for _, item in ipairs(sorted) do
-    table.insert(paths, item.path)
-  end
-
-  return paths
-end
-
 local track = d.media("track", {
   kind = { "file", "virtual" },
   select = function(parent)
@@ -42,20 +10,16 @@ local track = d.media("track", {
       return seeds
     end
 
-    return harvest(parent.path)
+    return parent.audio_files
   end,
 })
 
 local function disc_number(ctx)
-  return tonumber(d.get(ctx, "audio.tags.discnumber"))
-    or tonumber(d.get(ctx, "manifest.discnumber"))
-    or 1
+  return tonumber(d.get(ctx, "manifest.discnumber")) or 1
 end
 
 local function track_number(ctx)
-  return tonumber(d.get(ctx, "audio.tags.tracknumber"))
-    or tonumber(d.get(ctx, "manifest.tracknumber"))
-    or 0
+  return tonumber(d.get(ctx, "manifest.tracknumber")) or 0
 end
 
 local function lyrics_patterns(disc, number, total_discs)
@@ -87,6 +51,17 @@ track.input("audio", function(ctx)
   end
 
   return d.fs.read_audio(ctx.path)
+end)
+
+-- Physical tracks get their manifest entry from the parent album, which joins
+-- album.toml [[tracks]] to the audio files by position. Virtual tracks already
+-- carry their own entry in the seed.
+track.input("manifest", function(ctx)
+  if ctx.path == nil then
+    return ctx.manifest
+  end
+
+  return d.get(ctx, "parent.track_manifests")[ctx.path]
 end)
 
 track.input("mb_track", function(ctx)
@@ -130,7 +105,7 @@ track.id(function(ctx)
 end)
 
 local function from(ctx, key)
-  return d.get(ctx, "manifest." .. key) or d.get(ctx, "audio.tags." .. key)
+  return d.get(ctx, "manifest." .. key)
 end
 
 for _, key in ipairs({
@@ -198,14 +173,6 @@ end)
 track.tag("musicbrainz_artistid", function(ctx)
   return d.get(ctx, "manifest.musicbrainz_artistid")
     or d.get(ctx, "mb_track.artist-credit.1.artist.id")
-end)
-
-track.object("embedded", function(ctx)
-  if ctx.path == nil then
-    return ctx.manifest
-  end
-
-  return ctx.audio and ctx.audio.tags
 end)
 
 track.object("lyrics", function(ctx)

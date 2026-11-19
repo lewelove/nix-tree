@@ -71,14 +71,49 @@ local function audio_extensions()
   return d.fs.audio_extensions()
 end
 
-local function count_discs(path)
-  local discs = {}
-  for _, file in ipairs(d.fs.files(path, { ext = audio_extensions() })) do
-    local tags = d.get(d.fs.read_audio(file), "tags") or {}
-    discs[tostring(tags.discnumber or 1)] = true
+-- Audio files count as tracks at any depth under the album root. Their
+-- natural path order is the order album.toml [[tracks]] is matched against.
+local function audio_files(path)
+  return d.fs.files(path, { ext = audio_extensions(), depth = math.huge })
+end
+
+-- album.toml may omit discnumber; single-disc releases default to 1. Every
+-- (discnumber, tracknumber) pair must be unique or positional matching lies.
+local function order_tracks(path, entries, file_count)
+  if #entries ~= file_count then
+    error(string.format(
+      "%s: album.toml declares %d tracks, %d audio files found",
+      path, #entries, file_count
+    ))
   end
 
-  return math.max(d.tbl.count(discs), 1)
+  local ordered = {}
+  local seen = {}
+  for i, entry in ipairs(entries) do
+    local disc = d.str.leading_int(d.get(entry, "discnumber")) or 1
+    local number = d.str.leading_int(d.get(entry, "tracknumber"))
+    local title = tostring(d.get(entry, "title"))
+    if number == nil then
+      error(string.format("%s: track %q has no tracknumber", path, title))
+    end
+
+    local key = disc .. ":" .. number
+    if seen[key] ~= nil then
+      error(string.format(
+        "%s: tracks %q and %q share disc %d track %d",
+        path, seen[key], title, disc, number
+      ))
+    end
+    seen[key] = title
+
+    ordered[i] = { entry = entry, position = i, disc = disc, number = number }
+  end
+
+  d.list.sort_by(ordered, function(item)
+    return { item.disc, item.number, item.position }
+  end)
+
+  return ordered
 end
 
 album.input("lyrics_files", function(ctx)
@@ -89,8 +124,37 @@ album.input("mb_index", function(ctx)
   return index_mb(ctx.mb_release)
 end)
 
+album.input("audio_files", function(ctx)
+  return audio_files(ctx.path)
+end)
+
+-- album.toml [[tracks]] carries no file paths, so entries are matched to the
+-- naturally sorted audio files by position after validation. Virtual albums
+-- describe their tracks in the manifest itself, so they have nothing to join.
+album.input("track_manifests", function(ctx)
+  if ctx.virtual then
+    return {}
+  end
+
+  local entries = d.get(ctx, "manifest.tracks") or {}
+  local ordered = order_tracks(ctx.path, entries, #ctx.audio_files)
+  local album_meta = d.get(ctx, "manifest.album") or {}
+
+  local map = {}
+  for i, path in ipairs(ctx.audio_files) do
+    map[path] = d.tbl.extend("force", album_meta, ordered[i].entry)
+  end
+
+  return map
+end)
+
 album.input("total_discs", function(ctx)
-  return count_discs(ctx.path)
+  local discs = {}
+  for _, entry in ipairs(d.get(ctx, "manifest.tracks") or {}) do
+    discs[tostring(d.str.leading_int(d.get(entry, "discnumber")) or 1)] = true
+  end
+
+  return math.max(d.tbl.count(discs), 1)
 end)
 
 album.tag("albumartist", function(ctx)
