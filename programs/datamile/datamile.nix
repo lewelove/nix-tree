@@ -17,6 +17,6 @@
     {
       environment.systemPackages = [ pkgs.bun datamile-cmd ];
 
-      hm.link.".config/datamile" = ./.config/datamile;
+      hm.link.".config/datamile" = ./.config/main;
     };
 }
