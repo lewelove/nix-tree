@@ -5,7 +5,7 @@
     let
       nt = pkgs.writeShellApplication {
         name = "nt";
-        runtimeInputs = with pkgs; [ nh nix-output-monitor coreutils gum ];
+        runtimeInputs = with pkgs; [ nh coreutils gum ];
         text = ''
           rb() { gum style --foreground 1 --bold "$*"; }
           gb() { gum style --foreground 2 --bold "$*"; }
@@ -40,7 +40,7 @@
           gum join --horizontal "$(m "[>] ")" "Verifying Flake for " "$(b "[$TARGET_HOST]")" "..."
           echo
 
-          if NH_NOM=1 nh os build "$REPO_DIR" --hostname "$TARGET_HOST"; then
+          if nh os build "$REPO_DIR" --hostname "$TARGET_HOST"; then
               echo
               gum join --horizontal "$(g "[+] ")" "$(b "$TARGET_HOST")" " is valid and buildable."
           else

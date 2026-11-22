@@ -5,7 +5,7 @@
     let
       nrs = pkgs.writeShellApplication {
         name = "nrs";
-        runtimeInputs = with pkgs; [ nh nix-output-monitor nvd coreutils gum ];
+        runtimeInputs = with pkgs; [ nh coreutils gum ];
         text = ''
           rb() { gum style --foreground 1 --bold "$*"; }
           gb() { gum style --foreground 2 --bold "$*"; }
@@ -33,7 +33,7 @@
 
           export NH_FLAKE="${id.repoPath}"
 
-          if NH_NOM=1 nh os switch "${id.repoPath}" --hostname "$TARGET_HOST"; then
+          if nh os switch "${id.repoPath}" --hostname "$TARGET_HOST"; then
               echo
               gum join --horizontal "$(g "[+] ")" "Configuration for " "$(b "$TARGET_HOST")" " applied."
           else
