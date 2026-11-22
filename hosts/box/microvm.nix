@@ -3,8 +3,9 @@
 let
   sharedProjects = [
     "cloned"
+    "people"
+
     "datamile"
-    "nix-config"
     "ungoogled-flake"
   ];
 
@@ -41,9 +42,15 @@ in
     shares = [
       {
         proto = "virtiofs";
-        tag = "nix-config";
+        tag = "nix-tree";
         source = id.repoPath;
         mountPoint = id.repoPath;
+      }
+      {
+        proto = "virtiofs";
+        tag = "dotfiles";
+        source = "/home/${id.user}/dotfiles";
+        mountPoint = "/home/${id.user}/dotfiles";
       }
       {
         proto = "virtiofs";

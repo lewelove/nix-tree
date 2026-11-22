@@ -1,12 +1,5 @@
 { inputs, self, config, id, ... }:
 
-let
-  sharedProjects = [
-    "cloned"
-    "datamile"
-    "nix-tree"
-  ];
-in
 {
   imports = [
     inputs.microvm.nixosModules.host
@@ -20,7 +13,7 @@ in
     "d /home/${id.user}/virtual/box 0755 ${id.user} users -"
     "d /home/${id.user}/virtual/box/.config/nix 0755 ${id.user} users -"
     "d /home/${id.user}/dev 0755 ${id.user} users -"
-  ] ++ (map (name: "d /home/${id.user}/dev/${name} 0755 ${id.user} users -") sharedProjects);
+  ];
 
   sops.templates."box-nix-access-tokens" = {
     path = "/home/${id.user}/virtual/box/.config/nix/nix.conf";
