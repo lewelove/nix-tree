@@ -15,25 +15,27 @@
         libXrandr
       ];
 
-      photocraft = pkgs.writeShellScriptBin "photocraft" ''
+      photocraft-dev = pkgs.writeShellScriptBin "photocraft-dev" ''
         export WGPU_BACKEND="vulkan"
         export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath runtimeLibs}:/run/opengl-driver/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         exec "/home/${id.user}/dev/cloned/photocraft/target/release/photocraft" "$@"
       '';
     in
     {
-      environment.systemPackages = [ photocraft ];
+      environment.systemPackages = [ pkgs.photocraft photocraft-dev ];
 
-      hm.file.".config/photocraft" = dotfiles.link ".config/photocraft";
+      hm = {
+        file.".config/photocraft" = dotfiles.link ".config/photocraft";
 
-      hm.xdg.desktopEntries.photocraft = {
-        name = "PhotoCraft";
-        genericName = "Image Editor";
-        comment = "Clean-room Photoshop clone in Rust";
-        exec = "photocraft %F";
-        icon = "photocraft";
-        terminal = false;
-        categories = [ "Graphics" "Photography" ];
+        xdg.desktopEntries.photocraft-dev = {
+          name = "Photocraft Dev";
+          genericName = "Image Editor";
+          comment = "Dev build of PhotoCraft";
+          exec = "photocraft-dev %F";
+          icon = "ai.storyteller.photocraft";
+          terminal = false;
+          categories = [ "Graphics" "Photography" ];
+        };
       };
     };
 }
