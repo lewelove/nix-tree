@@ -48,6 +48,7 @@
       diff-explain
       diff-name
       diff-review
+      diff-branch
 
       home-manager
       secrets
