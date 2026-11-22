@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.quickshell = { pkgs, ... }: {
+  flake.nixosModules.quickshell = { pkgs, dotfiles, ... }: {
     hm = {
       systemd.user.services.quickshell = {
         Unit = {
@@ -19,7 +19,7 @@
         Install.WantedBy = [ "graphical-session.target" ];
       };
 
-      link.".config/quickshell" = ./.config/quickshell;
+      file.".config/quickshell" = dotfiles.link ".config/quickshell";
     };
   };
 }

@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.datamile = { pkgs, id, ... }:
+  flake.nixosModules.datamile = { pkgs, id, dotfiles, ... }:
     let
       datamile-cmd = pkgs.writeShellScriptBin "datamile" ''
         case "$1" in
@@ -17,6 +17,6 @@
     {
       environment.systemPackages = [ pkgs.bun datamile-cmd ];
 
-      hm.link.".config/datamile" = ./.config/main;
+      hm.file.".config/datamile" = dotfiles.link ".config/datamile";
     };
 }

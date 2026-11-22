@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.fuzzel = { pkgs, ... }:
+  flake.nixosModules.fuzzel = { pkgs, dotfiles, ... }:
     let
       fuzzel-bookmarks = pkgs.writeShellApplication {
         name = "fuzzel-bookmarks";
@@ -103,6 +103,6 @@
         pkgs.fuzzel
       ];
 
-      hm.link.".config/fuzzel" = ./.config/fuzzel;
+      hm.file.".config/fuzzel" = dotfiles.link ".config/fuzzel";
     };
 }

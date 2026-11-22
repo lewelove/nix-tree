@@ -1,8 +1,8 @@
 { ... }:
 
 {
-  flake.nixosModules.rmpc = { pkgs, ... }: {
+  flake.nixosModules.rmpc = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.rmpc ];
-    hm.link.".config/rmpc" = ./.config/rmpc;
+    hm.file.".config/rmpc" = dotfiles.link ".config/rmpc";
   };
 }

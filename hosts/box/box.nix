@@ -17,6 +17,7 @@
       })
     ] ++ (with self.nixosModules; [
       id
+      dotfiles
       system
       cli-utils
       home-manager

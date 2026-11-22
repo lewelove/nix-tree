@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.thunar = { pkgs, ... }: {
+  flake.nixosModules.thunar = { pkgs, dotfiles, ... }: {
     programs.thunar.enable = true;
 
     services.gvfs.enable = true;
@@ -19,6 +19,6 @@
       };
     };
 
-    hm.link.".config/Thunar" = ./.config/Thunar;
+    hm.file.".config/Thunar" = dotfiles.link ".config/Thunar";
   };
 }

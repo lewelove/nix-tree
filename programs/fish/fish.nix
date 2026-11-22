@@ -1,9 +1,9 @@
 { ... }:
 
 {
-  flake.nixosModules.fish = { ... }: {
+  flake.nixosModules.fish = { dotfiles, ... }: {
     programs.fish.enable = true;
 
-    hm.link.".config/fish" = ./.config/fish;
+    hm.file.".config/fish" = dotfiles.link ".config/fish";
   };
 }

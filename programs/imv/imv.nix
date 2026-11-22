@@ -1,9 +1,9 @@
 { ... }:
 
 {
-  flake.nixosModules.imv = { pkgs, ... }: {
+  flake.nixosModules.imv = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.imv ];
 
-    hm.link.".config/imv" = ./.config/imv;
+    hm.file.".config/imv" = dotfiles.link ".config/imv";
   };
 }

@@ -1,7 +1,7 @@
 { inputs, ... }:
 
 {
-  flake.nixosModules.mpv = { pkgs, ... }:
+  flake.nixosModules.mpv = { pkgs, dotfiles, ... }:
     let
       stable = inputs.nixpkgs-stable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
     in
@@ -20,6 +20,6 @@
         browser = "chromium";
       };
 
-      hm.link.".config/mpv" = ./.config/mpv;
+      hm.file.".config/mpv" = dotfiles.link ".config/mpv";
     };
 }

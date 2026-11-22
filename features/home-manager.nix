@@ -1,29 +1,17 @@
-{ inputs, lib, self, ... }:
+{ inputs, lib, ... }:
 
 {
   flake.nixosModules.home-manager = { id, config, ... }:
     let
-      flakeRoot = toString self;
-
-      resolve = src:
-        if builtins.isPath src then
-          "${id.repoPath}${lib.removePrefix flakeRoot (toString src)}"
-        else if lib.hasPrefix "/" src then
-          src
-        else
-          "${id.repoPath}/${src}";
-
-      linkModule = { config, ... }: {
-        options.link = lib.mkOption {
-          type = lib.types.attrsOf (lib.types.either lib.types.path lib.types.str);
+      fileModule = { config, ... }: {
+        options.file = lib.mkOption {
+          type = lib.types.attrsOf lib.types.path;
           default = {};
         };
 
-        config.home.file = lib.mapAttrs' (destination: sourcePath:
-          lib.nameValuePair destination {
-            source = config.lib.file.mkOutOfStoreSymlink (resolve sourcePath);
-          }
-        ) config.link;
+        config.home.file = lib.mapAttrs' (destination: source:
+          lib.nameValuePair destination { inherit source; }
+        ) config.file;
       };
     in
     {
@@ -42,7 +30,7 @@
           extraSpecialArgs = { inherit inputs id; };
           users.${id.user} = {
             home.stateVersion = "26.05";
-            imports = [ config.hm linkModule ];
+            imports = [ config.hm fileModule ];
           };
         };
       };

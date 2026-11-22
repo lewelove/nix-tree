@@ -1,10 +1,10 @@
 { ... }:
 
 {
-  flake.nixosModules.audio = { ... }: {
+  flake.nixosModules.audio = { dotfiles, ... }: {
     hm = {
-      link.".config/pipewire" = ./.config/pipewire;
-      link.".config/wireplumber" = ./.config/wireplumber;
+      file.".config/pipewire" = dotfiles.link ".config/pipewire";
+      file.".config/wireplumber" = dotfiles.link ".config/wireplumber";
     };
   };
 }

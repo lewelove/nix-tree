@@ -1,9 +1,9 @@
 { ... }:
 
 {
-  flake.nixosModules.starship = { pkgs, ... }: {
+  flake.nixosModules.starship = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.starship ];
 
-    hm.link.".config/starship.toml" = ./.config/starship.toml;
+    hm.file.".config/starship.toml" = dotfiles.link ".config/starship.toml";
   };
 }

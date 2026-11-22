@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.hyprland = { pkgs, ... }: {
+  flake.nixosModules.hyprland = { pkgs, dotfiles, ... }: {
     programs.hyprland = {
       enable = true;
       withUWSM = false;
@@ -33,7 +33,7 @@
     };
 
     hm = {
-      link.".config/hypr" = ./.config/hypr;
+      file.".config/hypr" = dotfiles.link ".config/hypr";
 
       systemd.user.targets.hyprland-session = {
         Unit = {

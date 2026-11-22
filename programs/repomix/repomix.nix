@@ -1,9 +1,9 @@
 { ... }:
 
 {
-  flake.nixosModules.repomix = { pkgs, ... }: {
+  flake.nixosModules.repomix = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.repomix ];
 
-    hm.link.".config/repomix" = ./.config/repomix;
+    hm.file.".config/repomix" = dotfiles.link ".config/repomix";
   };
 }

@@ -15,6 +15,7 @@
       ./home-manager.nix
     ] ++ (with self.nixosModules; [
       id
+      dotfiles
       system
       cli-utils
       cli-networking

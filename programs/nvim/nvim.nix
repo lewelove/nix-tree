@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.nvim = { pkgs, ... }: let
+  flake.nixosModules.nvim = { pkgs, dotfiles, ... }: let
     nv = pkgs.writeShellScriptBin "nv" ''
       exec ${pkgs.neovim}/bin/nvim "$@"
     '';
@@ -13,6 +13,6 @@
       nv
     ];
 
-    hm.link.".config/nvim" = ./.config/nvim;
+    hm.file.".config/nvim" = dotfiles.link ".config/nvim";
   };
 }

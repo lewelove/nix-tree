@@ -1,9 +1,9 @@
 { ... }:
 
 {
-  flake.nixosModules.foot = { pkgs, ... }: {
+  flake.nixosModules.foot = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.foot ];
 
-    hm.link.".config/foot" = ./.config/foot;
+    hm.file.".config/foot" = dotfiles.link ".config/foot";
   };
 }

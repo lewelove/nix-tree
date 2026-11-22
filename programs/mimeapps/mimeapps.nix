@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.mimeapps = { ... }: {
-    hm.link.".config/mimeapps.list" = ./.config/mimeapps.list;
+  flake.nixosModules.mimeapps = { dotfiles, ... }: {
+    hm.file.".config/mimeapps.list" = dotfiles.link ".config/mimeapps.list";
   };
 }

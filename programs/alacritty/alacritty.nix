@@ -1,9 +1,9 @@
 { ... }:
 
 {
-  flake.nixosModules.alacritty = { pkgs, ... }: {
+  flake.nixosModules.alacritty = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.alacritty ];
 
-    hm.link.".config/alacritty" = ./.config/alacritty;
+    hm.file.".config/alacritty" = dotfiles.link ".config/alacritty";
   };
 }

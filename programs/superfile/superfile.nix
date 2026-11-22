@@ -1,9 +1,9 @@
 { ... }:
 
 {
-  flake.nixosModules.superfile = { pkgs, ... }: {
+  flake.nixosModules.superfile = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.superfile ];
 
-    hm.link.".config/superfile" = ./.config/superfile;
+    hm.file.".config/superfile" = dotfiles.link ".config/superfile";
   };
 }

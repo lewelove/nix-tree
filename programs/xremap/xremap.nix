@@ -1,11 +1,11 @@
 { ... }:
 
 {
-  flake.nixosModules.xremap = { pkgs, ... }: {
+  flake.nixosModules.xremap = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.xremap ];
 
     hm = { pkgs, config, ... }: {
-      link.".config/xremap" = ./.config/xremap;
+      file.".config/xremap" = dotfiles.link ".config/xremap";
 
       systemd.user.services.xremap = {
         Unit = {

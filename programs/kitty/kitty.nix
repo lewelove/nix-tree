@@ -1,9 +1,9 @@
 { ... }:
 
 {
-  flake.nixosModules.kitty = { pkgs, ... }: {
+  flake.nixosModules.kitty = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.kitty ];
 
-    hm.link.".config/kitty" = ./.config/kitty;
+    hm.file.".config/kitty" = dotfiles.link ".config/kitty";
   };
 }

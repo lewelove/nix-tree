@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.figma = { pkgs, ... }: {
+  flake.nixosModules.figma = { pkgs, dotfiles, ... }: {
     webApps.figma = {
       name = "Figma";
       url = "https://figma.com";
@@ -25,7 +25,7 @@
         Install.WantedBy = [ "graphical-session.target" ];
       };
 
-      link.".config/figma-agent" = ./.config/figma-agent;
+      file.".config/figma-agent" = dotfiles.link ".config/figma-agent";
     };
   };
 }

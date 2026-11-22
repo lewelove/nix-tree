@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.photocraft = { pkgs, id, ... }:
+  flake.nixosModules.photocraft = { pkgs, id, dotfiles, ... }:
     let
       runtimeLibs = with pkgs; [
         wayland
@@ -24,7 +24,7 @@
     {
       environment.systemPackages = [ photocraft ];
 
-      hm.link.".config/photocraft" = ./.config/photocraft;
+      hm.file.".config/photocraft" = dotfiles.link ".config/photocraft";
 
       hm.xdg.desktopEntries.photocraft = {
         name = "PhotoCraft";

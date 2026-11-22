@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.cliphist = { pkgs, ... }: {
+  flake.nixosModules.cliphist = { pkgs, dotfiles, ... }: {
     environment.systemPackages = [ pkgs.cliphist ];
 
     hm = {
@@ -18,7 +18,7 @@
         Install.WantedBy = [ "graphical-session.target" ];
       };
 
-      link.".config/cliphist" = ./.config/cliphist;
+      file.".config/cliphist" = dotfiles.link ".config/cliphist";
     };
   };
 }
