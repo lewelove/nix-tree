@@ -65,6 +65,7 @@
       btop
       devenv
       direnv
+      rust
 
       alacritty
       superfile
