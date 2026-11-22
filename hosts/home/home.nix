@@ -36,7 +36,7 @@
 
       # Scripts
       cliphist-copy
-      nrs
+      rebuild
       sync
       try
       ytd
