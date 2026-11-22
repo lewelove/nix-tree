@@ -19,10 +19,13 @@
     systemd.oomd.enable = false;
     systemd.sockets.systemd-oomd.enable = false;
 
-    nix.settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
+    nix.settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      warn-dirty = false;
+    };
 
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
