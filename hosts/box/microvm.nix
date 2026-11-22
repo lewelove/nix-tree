@@ -9,19 +9,21 @@ let
     "ungoogled-flake"
   ];
 
+  # Mounted at the same path the host uses. Cargo bakes the workspace path into
+  # build-script output, so a second spelling of the same tree makes the shared
+  # target/ rebuild the C-heavy dependency chain on every switch of side.
   mkDevShare = name: {
     microvm.shares = [
       {
         proto = "virtiofs";
         tag = "dev-${name}";
         source = "/home/${id.user}/dev/${name}";
-        mountPoint = "/mnt/dev/${name}";
+        mountPoint = "/home/${id.user}/dev/${name}";
       }
     ];
 
     systemd.tmpfiles.rules = [
       "d /home/${id.user}/dev 0755 ${id.user} users -"
-      "L+ /home/${id.user}/dev/${name} - - - - /mnt/dev/${name}"
     ];
   };
 in
