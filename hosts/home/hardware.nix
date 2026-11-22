@@ -16,6 +16,7 @@
     device = "nodev";
     efiSupport = true;
     useOSProber = false;
+    gfxmodeEfi = "1920x1080,2560x1440,auto";
   };
 
   boot.supportedFilesystems = [
