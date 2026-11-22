@@ -5,11 +5,16 @@
     let
       powermenu = pkgs.writeShellApplication {
         name = "powermenu";
-        runtimeInputs = with pkgs; [ fuzzel systemd hyprland ];
+        runtimeInputs = with pkgs; [ fuzzel systemd hyprshutdown ];
         text = ''
-          OPTIONS="󰒲  Sleep\n󰑓  Reboot\n󰐥  Shutdown\n󰗼  Logout"
+          OPTIONS=(
+              "󰒲  Sleep"
+              "󰑓  Reboot"
+              "󰐥  Shutdown"
+              "󰗼  Logout"
+          )
 
-          SELECTION=$(echo -e "$OPTIONS" | fuzzel --dmenu --prompt="> " --lines 4 --width 32)
+          SELECTION=$(printf '%s\n' "''${OPTIONS[@]}" | fuzzel --dmenu --prompt="> " --lines 4 --width 32)
 
           case "$SELECTION" in
               *Sleep)
@@ -22,11 +27,7 @@
                   systemctl poweroff
                   ;;
               *Logout)
-                  if command -v hyprshutdown >/dev/null 2>&1; then
-                      hyprshutdown
-                  else
-                      hyprctl dispatch exit
-                  fi
+                  hyprshutdown
                   ;;
           esac
         '';
