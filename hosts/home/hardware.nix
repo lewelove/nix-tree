@@ -1,70 +1,89 @@
-{ config, lib, pkgs, modulesPath, ... }:
+{ config, lib, modulesPath, ... }:
 
 {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "uas" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" "msr" ];
-  boot.extraModulePackages = [ ];
-
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub = {
-    enable = true;
-    device = "nodev";
-    efiSupport = true;
-    useOSProber = false;
-    gfxmodeEfi = "1920x1080,2560x1440,auto";
+  boot = {
+    initrd = {
+      availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "uas" "sd_mod" ];
+      kernelModules = [ ];
+    };
+    kernelModules = [ "kvm-intel" "msr" ];
+    extraModulePackages = [ ];
+    supportedFilesystems = [
+      "btrfs"
+      "nfs"
+      "ntfs"
+    ];
+    kernelParams = [
+      "btusb.enable_autosuspend=0"
+      "bluetooth.disable_ertm=1"
+    ];
+    loader = {
+      efi.canTouchEfiVariables = true;
+      grub = {
+        enable = true;
+        device = "nodev";
+        efiSupport = true;
+        useOSProber = false;
+        gfxmodeEfi = "1920x1080,2560x1440,auto";
+      };
+    };
   };
 
-  boot.supportedFilesystems = [
-    "btrfs"
-    "nfs"
-    "ntfs"
-  ];
+  hardware = {
+    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+    uinput.enable = true;
+    ksm.enable = true;
 
-  boot.kernelParams = [
-    "btusb.enable_autosuspend=0"
-    "bluetooth.disable_ertm=1"
-  ];
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+      settings = {
+        General = {
+          Experimental = true;
+          AutoEnable = true;
+          AutoConnect = true;
+          UserspaceHID = true;
+          ControllerMode = "bredr";
+          Enable = "Source,Sink,Media,Socket";
+        };
+        Policy = {
+          AutoEnable = true;
+          ReconnectAttempts = 7;
+          ReconnectInterval = 2;
+        };
+      };
+    };
 
-  swapDevices = [ ];
-  zramSwap.enable = true;
-  # Device size cap, not a reservation. zstd compresses ~3.6x here, so 100
-  # buys ~4 GiB more usable memory than the 50 default without touching disk.
-  zramSwap.memoryPercent = 100;
+    graphics.enable = true;
+
+    nvidia = {
+      powerManagement.enable = true;
+      powerManagement.finegrained = false;
+      open = false;
+      nvidiaSettings = true;
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    };
+  };
+
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = "performance";
+    cpufreq = {
+      min = 3600000;
+      max = 3600000;
+    };
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  hardware.uinput.enable = true;
-  hardware.ksm.enable = true;
-
-  services.udev.extraRules = ''
-    KERNEL=="uinput", GROUP="uinput", MODE="0660"
-    KERNEL=="event*", GROUP="input", MODE="0660"
-  '';
-
-  systemd.services.disable-bd-prochot = {
-    description = "Disable BD PROCHOT CPU Throttling Bug";
-    after = [
-      "multi-user.target"
-      "suspend.target"
-      "hibernate.target"
-      "hybrid-sleep.target"
-    ];
-    wantedBy = [
-      "multi-user.target"
-      "suspend.target"
-      "hibernate.target"
-      "hybrid-sleep.target"
-    ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.msr-tools}/bin/wrmsr -a 0x1FC 0x38005c";
-    };
+  # Device size cap, not a reservation. zstd compresses ~3.6x here, so 100
+  # buys ~4 GiB more usable memory than the 50 default without touching disk.
+  zramSwap = {
+    enable = true;
+    memoryPercent = 100;
   };
 }

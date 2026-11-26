@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 
 {
   # Kernel OOM picks a small high-score process and leaves the box thrashing,
@@ -8,6 +8,46 @@
     oomd.enable = true;
     sockets.systemd-oomd.enable = true;
     oomd.enableUserSlices = true;
+
+    services.disable-bd-prochot = {
+      description = "Disable BD PROCHOT CPU Throttling Bug";
+      after = [
+        "multi-user.target"
+        "suspend.target"
+        "hibernate.target"
+        "hybrid-sleep.target"
+      ];
+      wantedBy = [
+        "multi-user.target"
+        "suspend.target"
+        "hibernate.target"
+        "hybrid-sleep.target"
+      ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.msr-tools}/bin/wrmsr -a 0x1FC 0x38005c";
+      };
+    };
+  };
+
+  services = {
+    blueman.enable = true;
+    xserver.videoDrivers = [ "nvidia" ];
+
+    udev.extraRules = ''
+      KERNEL=="uinput", GROUP="uinput", MODE="0660"
+      KERNEL=="event*", GROUP="input", MODE="0660"
+      KERNEL=="hidraw*", KERNELS=="*057E:2009*", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", KERNELS=="*045E:02FD*", MODE="0660", TAG+="uaccess"
+      KERNEL=="hidraw*", KERNELS=="*045E:0B13*", MODE="0660", TAG+="uaccess"
+    '';
+  };
+
+  programs = {
+    ssh.startAgent = true;
+    dconf.enable = true;
+    fuse.userAllowOther = true;
   };
 
   environment.sessionVariables = {
@@ -27,44 +67,5 @@
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_MENU_PREFIX = "plasma-";
     GTK_USE_PORTAL = "1";
-  };
-
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-    settings = {
-      General = {
-        Experimental = true;
-        AutoEnable = true;
-        AutoConnect = true;
-        UserspaceHID = true;
-        ControllerMode = "bredr";
-        Enable = "Source,Sink,Media,Socket";
-      };
-      Policy = {
-        AutoEnable = true;
-        ReconnectAttempts = 7;
-        ReconnectInterval = 2;
-      };
-    };
-  };
-
-  services.blueman.enable = true;
-
-  services.udev.extraRules = ''
-    KERNEL=="hidraw*", KERNELS=="*057E:2009*", MODE="0660", TAG+="uaccess"
-    KERNEL=="hidraw*", KERNELS=="*045E:02FD*", MODE="0660", TAG+="uaccess"
-    KERNEL=="hidraw*", KERNELS=="*045E:0B13*", MODE="0660", TAG+="uaccess"
-  '';
-
-  hardware.graphics.enable = true;
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  hardware.nvidia = {
-    powerManagement.enable = true;
-    powerManagement.finegrained = false;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 }

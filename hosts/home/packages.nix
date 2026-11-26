@@ -1,64 +1,62 @@
 { pkgs, ... }: {
-    environment.systemPackages = with pkgs; [
-      ydotool
-      wev
-      xhost
-      pulseaudio
-      gnome-disk-utility
-      sshfs
-      mesa-demos
-      waffle
-      apitrace
-      cryptsetup
-      brightnessctl
-      ddcutil
-      toml2json
-      qrencode
-      gparted
+  environment.systemPackages = with pkgs; [
+    ydotool
+    wev
+    xhost
+    pulseaudio
+    gnome-disk-utility
+    sshfs
+    mesa-demos
+    waffle
+    apitrace
+    cryptsetup
+    brightnessctl
+    ddcutil
+    toml2json
+    qrencode
+    gparted
 
-      libnotify
-      nemo
-      wl-clipboard
-      gnome-calculator
-      gnome-clocks
-      nicotine-plus
-      peazip
-      tor-browser
+    libnotify
+    nemo
+    wl-clipboard
+    gnome-calculator
+    gnome-clocks
+    nicotine-plus
+    peazip
+    tor-browser
 
-      fastfetch
-      tmux
-      hyperfine
-      git-filter-repo
-      taplo
-      yt-dlp
-      monolith
-      android-tools
+    fastfetch
+    tmux
+    hyperfine
+    git-filter-repo
+    taplo
+    yt-dlp
+    monolith
+    android-tools
 
-      python3
+    python3
 
-      distrobox
+    distrobox
 
-      flac
-      flac2all
-      mediainfo
-      imagemagick
-      roomeqwizard
-      transmission_4
-      ffmpeg
-      intermodal
-      aria2
-      umu-launcher
+    flac
+    flac2all
+    mediainfo
+    imagemagick
+    roomeqwizard
+    transmission_4
+    ffmpeg
+    intermodal
+    aria2
+    umu-launcher
+    prismlauncher
 
-      nwg-look
-      adwaita-icon-theme
+    nwg-look
+    adwaita-icon-theme
 
-      nh
-      nvd
-      nix-output-monitor
+    nh
+    nvd
+    nix-output-monitor
 
-      love
-    ];
-
-    programs.dconf.enable = true;
-    programs.fuse.userAllowOther = true;
+    love
+  ];
 }

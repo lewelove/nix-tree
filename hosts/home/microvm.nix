@@ -5,8 +5,6 @@
     inputs.microvm.nixosModules.host
   ];
 
-  boot.kernelModules = [ "kvm-intel" ];
-
   networking.firewall.allowedTCPPorts = [ 2223 ];
 
   systemd.tmpfiles.rules = [

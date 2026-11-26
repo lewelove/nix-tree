@@ -12,9 +12,8 @@
       ./packages.nix
       ./hardware.nix
       ./disko.nix
-      ./games.nix
       ./home-manager.nix
-      ./box-vm.nix
+      ./microvm.nix
 
       inputs.ungoogled.nixosModules.default
     ] ++ (with self.nixosModules; [
@@ -93,7 +92,6 @@
       thunar
       quickshell
       datamile
-      # figma
       syncthing
       syncthing-web-app
 
