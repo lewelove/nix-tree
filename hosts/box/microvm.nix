@@ -1,6 +1,8 @@
-{ id, ... }:
+{ id, config, lib, pkgs, ... }:
 
 let
+  kernelAtLeast = lib.versionAtLeast config.boot.kernelPackages.kernel.version;
+
   sharedProjects = [
     "cloned"
     "people"
@@ -40,6 +42,18 @@ in
     mem = 6144;
 
     storeDiskType = "erofs";
+
+    # Stock builder copies the whole closure because a symlink in it dangles in
+    # the sandbox. See ./store-disk.nix.
+    storeDisk = lib.mkForce (import ./store-disk.nix { inherit config lib pkgs; });
+
+    # This image is rebuilt from scratch on every switch. lz4hc (the upstream
+    # default) compresses at about 40 MB/s per core; lz4 is roughly ten times
+    # faster and makes the image about 10% bigger. Same flags otherwise.
+    storeDiskErofsFlags =
+      [ "-zlz4" ]
+      ++ lib.optional (kernelAtLeast "5.16") "-Eztailpacking"
+      ++ lib.optional (kernelAtLeast "6.1") "-Efragments";
 
     shares = [
       {
