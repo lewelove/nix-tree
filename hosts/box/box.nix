@@ -9,12 +9,10 @@
 
       ./system.nix
       ./network.nix
+      ./hardware.nix
       ./packages.nix
       ./microvm.nix
-
-      ({ id, ... }: {
-        home-manager.users.${id.user}.home.activationGenerateGcRoot = false;
-      })
+      ./home-manager.nix
     ] ++ (with self.nixosModules; [
       id
       dotfiles
