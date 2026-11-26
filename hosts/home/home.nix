@@ -31,7 +31,6 @@
       theme
 
       # Network
-      # sing-box
       v2raya
 
       # Scripts
