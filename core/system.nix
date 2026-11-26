@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  flake.nixosModules.system = { pkgs, id, ... }: {
+  flake.nixosModules.system = { pkgs, lib, id, ... }: {
     time.timeZone = "Europe/Moscow";
     i18n.defaultLocale = "en_US.UTF-8";
 
@@ -16,8 +16,8 @@
 
     nixpkgs.config.allowUnfree = true;
 
-    systemd.oomd.enable = false;
-    systemd.sockets.systemd-oomd.enable = false;
+    systemd.oomd.enable = lib.mkDefault false;
+    systemd.sockets.systemd-oomd.enable = lib.mkDefault false;
 
     nix.settings = {
       experimental-features = [

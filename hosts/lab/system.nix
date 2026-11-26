@@ -21,8 +21,8 @@
 
   services.logrotate.enable = lib.mkForce true;
 
-  systemd.oomd.enable = lib.mkForce true;
-  systemd.sockets.systemd-oomd.enable = lib.mkForce true;
+  systemd.oomd.enable = true;
+  systemd.sockets.systemd-oomd.enable = true;
 
   users.users.${id.user} = {
     uid = lib.mkForce 1000;

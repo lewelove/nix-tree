@@ -32,6 +32,9 @@
 
   swapDevices = [ ];
   zramSwap.enable = true;
+  # Device size cap, not a reservation. zstd compresses ~3.6x here, so 100
+  # buys ~4 GiB more usable memory than the 50 default without touching disk.
+  zramSwap.memoryPercent = 100;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

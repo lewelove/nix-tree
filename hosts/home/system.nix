@@ -1,6 +1,15 @@
 { pkgs, config, ... }:
 
 {
+  # Kernel OOM picks a small high-score process and leaves the box thrashing,
+  # so kill the whole user session instead. core/system.nix only sets
+  # mkDefault false, so plain true wins.
+  systemd = {
+    oomd.enable = true;
+    sockets.systemd-oomd.enable = true;
+    oomd.enableUserSlices = true;
+  };
+
   environment.sessionVariables = {
     WGPU_BACKEND = "vulkan";
     WLR_DRM_NO_ATOMIC = "1";
@@ -18,7 +27,6 @@
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_MENU_PREFIX = "plasma-";
     GTK_USE_PORTAL = "1";
-    EDITOR = "nvim";
   };
 
   hardware.bluetooth = {
