@@ -11,6 +11,7 @@
       ./network.nix
       ./packages.nix
       ./hardware.nix
+      ./nvidia.nix
       ./disko.nix
       ./home-manager.nix
       ./microvm.nix

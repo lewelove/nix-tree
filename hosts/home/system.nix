@@ -33,7 +33,6 @@
 
   services = {
     blueman.enable = true;
-    xserver.videoDrivers = [ "nvidia" ];
 
     udev.extraRules = ''
       KERNEL=="uinput", GROUP="uinput", MODE="0660"
@@ -51,19 +50,10 @@
   };
 
   environment.sessionVariables = {
-    WGPU_BACKEND = "vulkan";
-    WLR_DRM_NO_ATOMIC = "1";
-    LIBVA_DRIVER_NAME = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    GBM_BACKEND = "nvidia-drm";
-    WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
     XCURSOR_THEME = "Adwaita";
     XCURSOR_SIZE = "24";
     FREETYPE_PROPERTIES = "truetype:interpreter-version=40 cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
-    __GL_FSA_MODE = "0";
-    __GL_AA_MODE = "0";
-    __GL_MAX_FRAMES_ALLOWED = "0";
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_MENU_PREFIX = "plasma-";
     GTK_USE_PORTAL = "1";
