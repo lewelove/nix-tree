@@ -23,5 +23,7 @@
         '';
       };
     };
+
+    networking.firewall.allowedTCPPorts = [ 6600 ];
   };
 }
