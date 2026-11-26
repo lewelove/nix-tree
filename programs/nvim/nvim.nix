@@ -13,6 +13,11 @@
       nv
     ];
 
+    hm.home.sessionVariables = {
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
+
     hm.file.".config/nvim" = dotfiles.link ".config/nvim";
   };
 }
